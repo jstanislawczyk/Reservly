@@ -16,11 +16,10 @@ class HomeControllerSpec extends Specification {
       route(app, FakeRequest(GET, "/wrong")) must beSome.which (status(_) == NOT_FOUND)
     }
 
-    "get the home endpoint" in new WithApplication {
+    "render the home endpoint response" in new WithApplication {
       val home: Future[mvc.Result] = route(app, FakeRequest(GET, "/")).get
 
       status(home) must equalTo(OK)
-      contentType(home) must beSome.which(_ == "text/html")
     }
   }
 }
