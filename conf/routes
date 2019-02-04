@@ -1,0 +1,7 @@
+# Home Controller
+
+GET             /                           controllers.HomeController.home
+
+# Player Controller
+
+GET             /players                    controllers.PlayerController.getAllPlayers
