@@ -1,7 +1,12 @@
 # Home Controller
 
-GET             /                           controllers.HomeController.home
+GET             /                           controllers.HomeController.home()
 
 # Player Controller
 
-GET             /players                    controllers.PlayerController.getAllPlayers
+GET             /players                    controllers.PlayerController.getAllPlayers()
+
+# Matches Controller
+
+
+GET             /matches                    controllers.MatchController.getAllMatches()
