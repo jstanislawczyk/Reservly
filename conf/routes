@@ -1,6 +1,6 @@
 # Home Controller
 
-GET             /                           controllers.HomeController.home()
+GET             /                           controllers.HomeController.home
 
 # Player Controller
 
@@ -8,5 +8,5 @@ GET             /players                    controllers.PlayerController.getAllP
 
 # Matches Controller
 
-
 GET             /matches                    controllers.MatchController.getAllMatches()
+GET             /matches/players            controllers.MatchController.getAllMatchesWithPlayers()
