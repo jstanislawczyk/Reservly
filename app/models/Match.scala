@@ -5,8 +5,6 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 object Match {
-  implicit val personFormat: OFormat[Match] = Json.format[Match]
-
   implicit object timestampFormat extends Format[Timestamp] {
     val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
 
@@ -17,8 +15,10 @@ object Match {
 
     def writes(ts: Timestamp) = JsString(format.format(ts))
   }
+
+  implicit val personFormat: OFormat[Match] = Json.format[Match]
 }
 
-case class Match(id: Long, startDate: Timestamp, endDate: Timestamp)
+case class Match(id: Long, startDate: Timestamp, endDate: Timestamp, playerId: Long)
 
 
