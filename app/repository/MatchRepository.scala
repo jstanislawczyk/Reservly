@@ -4,7 +4,7 @@ package repository
 import java.sql.Timestamp
 
 import javax.inject.{Inject, Singleton}
-import models.Match
+import models.{Match, Player}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
@@ -32,6 +32,16 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   def getAllMatches(): Future[Seq[Match]] = db.run {
     matches.result
+  }
+
+  def getAllMatchesWithPlayers(): Future[Seq[(Match, Player)]] = {
+    val getMatchTableWithPlayerTableQuery = for {
+      (game, player) <- matches join playersRepository.players on (_.id === _.id)
+    } yield (game, player)
+
+    db.run {
+      getMatchTableWithPlayerTableQuery.result
+    }
   }
 }
 

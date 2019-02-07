@@ -16,4 +16,10 @@ class MatchController @Inject()
       Ok(Json.toJson(matches))
     }
   }
+
+  def getAllMatchesWithPlayers: Action[AnyContent] = Action.async { implicit request =>
+    repository.getAllMatchesWithPlayers().map { matches =>
+      Ok(Json.toJson(matches))
+    }
+  }
 }
