@@ -1,6 +1,6 @@
 # Home Controller
 
-GET             /                           controllers.HomeController.home
+GET             /                           controllers.HomeController.home()
 
 # Player Controller
 
