@@ -13,13 +13,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
 
-  val dbConfig = dbConfigProvider.get[JdbcProfile]
-  val playersRepository = new PlayerRepository(dbConfigProvider)
+  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+  private val playersRepository = new PlayerRepository(dbConfigProvider)
 
   import dbConfig._
   import profile.api._
 
-  class MatchesTable(tag: Tag) extends Table[Match](tag, "matches") {
+  private class MatchesTable(tag: Tag) extends Table[Match](tag, "matches") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def startDate = column[Timestamp]("start_date")
     def endDate = column[Timestamp]("end_date")
@@ -28,7 +28,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     def player = foreignKey("player", playerId, playersRepository.players)(_.id)
   }
 
-  val matches = TableQuery[MatchesTable]
+  private val matches = TableQuery[MatchesTable]
 
   def getAllMatches(): Future[Seq[Match]] = db.run {
     matches.result

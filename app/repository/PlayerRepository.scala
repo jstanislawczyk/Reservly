@@ -10,12 +10,12 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
 
-  val dbConfig = dbConfigProvider.get[JdbcProfile]
+  protected val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
   import profile.api._
 
-  class PlayersTable(tag: Tag) extends Table[Player](tag, "players") {
+  protected class PlayersTable(tag: Tag) extends Table[Player](tag, "players") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def firstName = column[String]("first_name")
     def lastName = column[String]("last_name")
