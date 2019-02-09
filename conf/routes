@@ -1,12 +1,15 @@
 # Home Controller
 
-GET             /                           controller.HomeController.home()
+GET             /                               controller.HomeController.home()
 
 # Player Controller
 
-GET             /players                    controller.PlayerController.getAllPlayers()
+GET             /players                        controller.PlayerController.getAllPlayers()
+GET             /players/:playerId              controller.PlayerController.getPlayerById(playerId: Long)
 
 # Matches Controller
 
-GET             /matches                    controller.MatchController.getAllMatches()
-GET             /matches/players            controller.MatchController.getAllMatchesWithPlayers()
+GET             /matches                        controller.MatchController.getAllMatches()
+GET             /matches/players                controller.MatchController.getAllMatchesWithPlayers()
+GET             /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
+GET             /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
