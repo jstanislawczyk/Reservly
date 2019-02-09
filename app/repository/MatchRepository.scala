@@ -29,15 +29,33 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   }
 
   private val matches = TableQuery[MatchesTable]
+  private val players = playersRepository.players
 
   def getAllMatches(): Future[Seq[Match]] = db.run {
     matches.result
   }
 
   def getAllMatchesWithPlayers(): Future[Seq[(Match, Player)]] = {
-    val getMatchTableWithPlayerTableQuery = for {
-      (game, player) <- matches join playersRepository.players on (_.id === _.id)
-    } yield (game, player)
+    val getMatchTableWithPlayerTableQuery =
+      matches
+        .join(players)
+        .on(_.id === _.id)
+
+    db.run {
+      getMatchTableWithPlayerTableQuery.result
+    }
+  }
+
+  def getMatchById(matchId: Long): Future[Option[Match]] = db.run {
+    matches.filter(_.id === matchId).result.headOption
+  }
+
+  def getMatchByIdWithPlayer(matchId: Long): Future[Seq[(Match, Player)]] = {
+    val getMatchTableWithPlayerTableQuery =
+      matches
+        .join(players)
+        .on(_.id === _.id)
+        .filter(game => game._1.id === matchId)
 
     db.run {
       getMatchTableWithPlayerTableQuery.result

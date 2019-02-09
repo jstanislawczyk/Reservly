@@ -22,4 +22,21 @@ class MatchController @Inject()
       Ok(Json.toJson(matches))
     }
   }
+
+  def getMatchById(matchId: Long): Action[AnyContent] = Action.async { implicit request =>
+    repository.getMatchById(matchId).map {
+      case None => NotFound(s"Match [id = $matchId] not found")
+      case Some(game) => Ok(Json.toJson(game))
+    }
+  }
+
+  def getMatchByIdWithPlayer(matchId: Long): Action[AnyContent] = Action.async { implicit request =>
+    repository.getMatchByIdWithPlayer(matchId).map { game =>
+      if(game.nonEmpty) {
+        Ok(Json.toJson(game))
+      } else {
+        NotFound(s"Match [id = $matchId] not found")
+      }
+    }
+  }
 }
