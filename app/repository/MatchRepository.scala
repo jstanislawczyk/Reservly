@@ -50,7 +50,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     matches.filter(_.id === matchId).result.headOption
   }
 
-  def getMatchByIdWithPlayer(matchId: Long): Future[Seq[(Match, Player)]] = {
+  def getMatchByIdWithPlayer(matchId: Long): Future[Option[(Match, Player)]] = {
     val getMatchTableWithPlayerTableQuery =
       matches
         .join(players)
@@ -58,7 +58,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
         .filter(game => game._1.id === matchId)
 
     db.run {
-      getMatchTableWithPlayerTableQuery.result
+      getMatchTableWithPlayerTableQuery.result.headOption
     }
   }
 }
