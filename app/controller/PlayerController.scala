@@ -16,4 +16,11 @@ class PlayerController @Inject()
       Ok(Json.toJson(players))
     }
   }
+
+  def getPlayerById(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
+    repository.getPlayerById(playerId).map {
+      case None => NotFound(s"Player [id = $playerId] not found")
+      case Some(player) => Ok(Json.toJson(player))
+    }
+  }
 }

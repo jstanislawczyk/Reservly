@@ -27,4 +27,8 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   def getAllPlayers(): Future[Seq[Player]] = db.run {
     players.result
   }
+
+  def getPlayerById(playerId: Long): Future[Option[Player]] = db.run {
+    players.filter(_.id === playerId).result.headOption
+  }
 }
