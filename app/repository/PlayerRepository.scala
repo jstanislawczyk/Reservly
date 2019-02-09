@@ -1,7 +1,7 @@
 package repository
 
 import javax.inject.{Inject, Singleton}
-import models.Player
+import model.Player
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

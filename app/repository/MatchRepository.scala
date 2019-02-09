@@ -4,7 +4,7 @@ package repository
 import java.sql.Timestamp
 
 import javax.inject.{Inject, Singleton}
-import models.{Match, Player}
+import model.{Match, Player}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 

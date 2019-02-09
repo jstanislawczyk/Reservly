@@ -1,8 +1,14 @@
-package models
+package model
 
 import play.api.libs.json._
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+
+case class Match(
+id: Long,
+  startDate: Timestamp,
+  endDate: Timestamp, playerId: Long
+)
 
 object Match {
   implicit object timestampFormat extends Format[Timestamp] {
@@ -18,7 +24,3 @@ object Match {
 
   implicit val personFormat: OFormat[Match] = Json.format[Match]
 }
-
-case class Match(id: Long, startDate: Timestamp, endDate: Timestamp, playerId: Long)
-
-

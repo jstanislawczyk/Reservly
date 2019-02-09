@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import javax.inject.Inject
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}

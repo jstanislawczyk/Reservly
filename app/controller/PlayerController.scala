@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import javax.inject._
 import play.api.libs.json.Json

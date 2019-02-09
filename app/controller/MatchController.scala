@@ -1,4 +1,4 @@
-package controllers
+package controller
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
