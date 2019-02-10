@@ -42,4 +42,10 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
         into ((data, id) => Player(id, data._1, data._2))
     ) += (firstName, lastName)
   }
+
+  def deletePlayer(playerId: Long): Future[Int] = db.run {
+    players
+      .filter(_.id === playerId)
+      .delete
+  }
 }

@@ -33,4 +33,11 @@ class PlayerController @Inject()
       Ok(s"Player [$player] saved")
     )
   }
+
+  def deletePlayer(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
+    repository.deletePlayer(playerId).map {
+      case 0 => NotFound(s"Player [id = $playerId] not found")
+      case 1 => Ok(s"Player [id = $playerId] deleted")
+    }
+  }
 }
