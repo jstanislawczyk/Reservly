@@ -29,7 +29,10 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   }
 
   def getPlayerById(playerId: Long): Future[Option[Player]] = db.run {
-    players.filter(_.id === playerId).result.headOption
+    players
+      .filter(_.id === playerId)
+      .result
+      .headOption
   }
 
   def savePlayer(firstName: String, lastName: String): Future[Player] = db.run {
@@ -43,7 +46,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     ) += (firstName, lastName)
   }
 
-  def deletePlayer(playerId: Long): Future[Int] = db.run {
+  def deletePlayerById(playerId: Long): Future[Int] = db.run {
     players
       .filter(_.id === playerId)
       .delete
