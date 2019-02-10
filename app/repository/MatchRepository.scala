@@ -61,5 +61,23 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       getMatchTableWithPlayerTableQuery.result.headOption
     }
   }
+
+  def saveMatch(playerId: Long, startDate: Timestamp, endDate: Timestamp): Future[Match] = db.run {
+    (
+      matches.map(game =>
+        (game.startDate, game.endDate, game.playerId)
+      )
+
+      returning matches.map(_.id)
+        into ((data, id) => Match(id, data._1, data._2, data._3))
+      
+    ) += (startDate, endDate, playerId)
+  }
+
+  def deleteMatchById(matchId: Long): Future[Int] = db.run {
+    matches
+      .filter(_.id === matchId)
+      .delete
+  }
 }
 
