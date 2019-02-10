@@ -4,10 +4,13 @@ import play.api.libs.json._
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
+import com.google.gson.Gson
+
 case class Match(
-id: Long,
+  id: Long,
   startDate: Timestamp,
-  endDate: Timestamp, playerId: Long
+  endDate: Timestamp,
+  playerId: Long
 )
 
 object Match {
@@ -20,6 +23,11 @@ object Match {
     }
 
     def writes(ts: Timestamp) = JsString(format.format(ts))
+  }
+
+  def parseMatchJson(gameJson: String): Match = {
+    val gson = new Gson
+    gson.fromJson(gameJson, classOf[Match])
   }
 
   implicit val personFormat: OFormat[Match] = Json.format[Match]
