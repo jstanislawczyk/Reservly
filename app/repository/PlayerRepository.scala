@@ -31,4 +31,15 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   def getPlayerById(playerId: Long): Future[Option[Player]] = db.run {
     players.filter(_.id === playerId).result.headOption
   }
+
+  def savePlayer(firstName: String, lastName: String): Future[Player] = db.run {
+    (
+      players.map(player =>
+        (player.firstName, player.lastName)
+      )
+
+      returning players.map(_.id)
+        into ((data, id) => Player(id, data._1, data._2))
+    ) += (firstName, lastName)
+  }
 }
