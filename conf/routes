@@ -15,4 +15,5 @@ GET             /matches                        controller.MatchController.getAl
 GET             /matches/players                controller.MatchController.getAllMatchesWithPlayers()
 GET             /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
 GET             /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
+POST            /matches                        controller.MatchController.saveMatch()
 DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
