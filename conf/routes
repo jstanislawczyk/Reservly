@@ -7,7 +7,7 @@ GET             /                               controller.HomeController.home()
 GET             /players                        controller.PlayerController.getAllPlayers()
 GET             /players/:playerId              controller.PlayerController.getPlayerById(playerId: Long)
 POST            /players                        controller.PlayerController.savePlayer()
-DELETE          /players/:playerId              controller.PlayerController.deletePlayer(playerId: Long)
+DELETE          /players/:playerId              controller.PlayerController.deletePlayerById(playerId: Long)
 
 # Matches Controller
 
@@ -15,3 +15,4 @@ GET             /matches                        controller.MatchController.getAl
 GET             /matches/players                controller.MatchController.getAllMatchesWithPlayers()
 GET             /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
 GET             /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
+DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
