@@ -17,3 +17,11 @@ GET             /matches/:matchId               controller.MatchController.getMa
 GET             /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
 POST            /matches                        controller.MatchController.saveMatch()
 DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
+
+# Swagger routes
+GET             /assets/*file                   controllers.Assets.at(path="/public", file)
+
+GET             /swagger.json                   controllers.ApiHelpController.getResources
+
+GET             /docs/                          controllers.Assets.at(path="/public/swagger", file="index.html")
+GET             /docs/*file                     controllers.Assets.at(path="/public/swagger", file)
