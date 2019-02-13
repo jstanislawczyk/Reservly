@@ -55,7 +55,7 @@ class MatchController @Inject()
   }
 
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Saves given match. Match object is parsed from request body match JSON")
+    new ApiResponse(code = 200, message = "Saves given match. Match object is parsed from match request body (in JSON)")
   ))
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
