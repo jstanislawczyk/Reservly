@@ -1,6 +1,6 @@
 package controller
 
-import io.swagger.annotations.{ApiResponse, ApiResponses}
+import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject._
 import model.Player
 import play.api.libs.json.Json
@@ -10,6 +10,7 @@ import repository.PlayerRepository
 import scala.concurrent.ExecutionContext
 
 @Singleton
+@Api("PlayerController")
 class PlayerController @Inject()
   (repository: PlayerRepository, cc: MessagesControllerComponents )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
