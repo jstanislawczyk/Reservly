@@ -4,11 +4,11 @@ import javax.inject.Inject
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 
-@Api
+@Api("HomeController")
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
     @ApiResponses(Array(
-      new ApiResponse(code = 200, message = "Home endpoint -> ok")
+      new ApiResponse(code = 200, message = "Default home endpoint. Returns 'home' message")
     ))
     def home(): Action[AnyContent] = Action {
       Ok("Home")
