@@ -6,6 +6,7 @@ A tool for reserving Fifa match queue
 * Play Framework 2
 * Slick
 * PostgreSQL
+* Swagger
 
 ## Frontend
 Frontend repository available [here](https://github.com/mtrybus2208/game-reservation-app) 
