@@ -1,5 +1,6 @@
 package controller
 
+import akka.actor.ActorSystem
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
 import model.Match
@@ -12,7 +13,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 @Api("MatchController")
 class MatchController @Inject()
-  (repository: MatchRepository, cc: MessagesControllerComponents )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+  (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all matches list")
@@ -61,6 +62,8 @@ class MatchController @Inject()
     val matchJson = request.body.asJson.get.toString()
     val matchObject = Match.parseMatchJson(matchJson)
 
+    actorSystem.actorSelection("/user/*") ! ""
+
     repository.saveMatch(matchObject.playerId, matchObject.startDate, matchObject.endDate).map(game =>
       Ok(s"Match [$game] saved")
     )
@@ -71,6 +74,9 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
+
+    actorSystem.actorSelection("/user/*") ! ""
+
     repository.deleteMatchById(matchId).map {
       case 0 => NotFound(s"Match [id = $matchId] not found")
       case 1 => Ok(s"Match [id = $matchId] deleted")
