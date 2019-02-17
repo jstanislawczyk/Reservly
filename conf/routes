@@ -18,6 +18,10 @@ GET             /matches/:matchId/players       controller.MatchController.getMa
 POST            /matches                        controller.MatchController.saveMatch()
 DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
 
+# Websocket
+
+GET             /socket/matches                 websocket.MatchSocket.getMatches()
+
 # Swagger routes
 GET             /assets/*file                   controllers.Assets.at(path="/public", file)
 
