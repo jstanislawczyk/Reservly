@@ -13,7 +13,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 @Api("MatchController")
 class MatchController @Inject()
-  (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+  (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem)
+  (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all matches list")

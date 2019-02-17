@@ -12,7 +12,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 @Api("PlayerController")
 class PlayerController @Inject()
-  (repository: PlayerRepository, cc: MessagesControllerComponents )(implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
+  (repository: PlayerRepository, cc: MessagesControllerComponents )
+  (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all players list")
