@@ -62,11 +62,10 @@ class MatchController @Inject()
     val matchJson = request.body.asJson.get.toString()
     val matchObject = Match.parseMatchJson(matchJson)
 
-    actorSystem.actorSelection("/user/*") ! ""
-
-    repository.saveMatch(matchObject.playerId, matchObject.startDate, matchObject.endDate).map(game =>
+    repository.saveMatch(matchObject.playerId, matchObject.startDate, matchObject.endDate).map(game => {
+      actorSystem.actorSelection("/user/*") ! ""
       Ok(s"Match [$game] saved")
-    )
+    })
   }
 
   @ApiResponses(Array(
@@ -75,11 +74,11 @@ class MatchController @Inject()
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
 
-    actorSystem.actorSelection("/user/*") ! ""
-
     repository.deleteMatchById(matchId).map {
       case 0 => NotFound(s"Match [id = $matchId] not found")
-      case 1 => Ok(s"Match [id = $matchId] deleted")
+      case 1 =>
+        actorSystem.actorSelection("/user/*") ! ""
+        Ok(s"Match [id = $matchId] deleted")
     }
   }
 }
