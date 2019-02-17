@@ -19,10 +19,17 @@ class MatchActor(repository: MatchRepository, @Named("match_actor") out: ActorRe
 
   def receive: PartialFunction[Any, Unit] = {
     case _: String =>
-      actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 60.seconds) {
-        repository.getAllMatchesWithPlayers().map { matches =>
-          out ! s"${Json.toJson(matches)}"
-        }
+
+      idleConnectionBreakPrevent()
+
+      repository.getAllMatchesWithPlayers().map { matches =>
+        out ! s"${Json.toJson(matches)}"
       }
+  }
+
+  def idleConnectionBreakPrevent(): Unit = {
+    actorSystem.scheduler.schedule(initialDelay = 0.seconds, interval = 60.seconds) {
+      out ! ""
+    }
   }
 }
