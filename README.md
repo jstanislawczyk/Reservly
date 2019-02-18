@@ -7,7 +7,7 @@ A tool for reserving Fifa match queue
 * Slick
 * PostgreSQL
 * Swagger
-* Websockets (Akka actores)
+* Websockets (Akka actors)
 
 ## Frontend
 Frontend repository available [here](https://github.com/mtrybus2208/game-reservation-app) 
