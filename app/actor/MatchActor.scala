@@ -2,7 +2,6 @@ package actor
 
 import akka.actor._
 import akka.actor.{ActorRef, ActorSystem}
-import akka.parboiled2.RuleTrace.Named
 import play.api.libs.json.Json
 import repository.MatchRepository
 
@@ -14,7 +13,7 @@ object MatchActor {
     = Props(new MatchActor(repository, out, actorSystem))
 }
 
-class MatchActor(repository: MatchRepository, @Named("match_actor") out: ActorRef, actorSystem: ActorSystem)
+class MatchActor (repository: MatchRepository, out: ActorRef, actorSystem: ActorSystem)
                 (implicit executionContext: ExecutionContext) extends Actor {
 
   def receive: PartialFunction[Any, Unit] = {
@@ -23,7 +22,7 @@ class MatchActor(repository: MatchRepository, @Named("match_actor") out: ActorRe
       idleConnectionBreakPrevent()
 
       repository.getAllMatchesWithPlayers().map { matches =>
-        out ! s"${Json.toJson(matches)}"
+        out ! s"(MATCHES) ${Json.toJson(matches)}"
       }
   }
 
