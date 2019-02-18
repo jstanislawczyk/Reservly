@@ -1,16 +1,15 @@
 # Home Controller
-
 GET             /                               controller.HomeController.home()
 
-# Player Controller
 
+# Player Controller
 GET             /players                        controller.PlayerController.getAllPlayers()
 GET             /players/:playerId              controller.PlayerController.getPlayerById(playerId: Long)
 POST            /players                        controller.PlayerController.savePlayer()
 DELETE          /players/:playerId              controller.PlayerController.deletePlayerById(playerId: Long)
 
-# Matches Controller
 
+# Matches Controller
 GET             /matches                        controller.MatchController.getAllMatches()
 GET             /matches/players                controller.MatchController.getAllMatchesWithPlayers()
 GET             /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
@@ -18,14 +17,17 @@ GET             /matches/:matchId/players       controller.MatchController.getMa
 POST            /matches                        controller.MatchController.saveMatch()
 DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
 
-# Websocket
 
+# Match Websocket
 GET             /socket/matches                 websocket.MatchSocket.getMatches()
+
+
+# Chat Websocket
+GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat()
+
 
 # Swagger routes
 GET             /assets/*file                   controllers.Assets.at(path="/public", file)
-
 GET             /swagger.json                   controllers.ApiHelpController.getResources
-
 GET             /docs/                          controllers.Assets.at(path="/public/swagger", file="index.html")
 GET             /docs/*file                     controllers.Assets.at(path="/public/swagger", file)
