@@ -21,8 +21,7 @@ class MatchSocket @Inject()
   ))
   def getMatches(): WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef { out => {
-        MatchActor.props(repository, out, actorSystem)
-      }
-    }
+      MatchActor.props(repository, out, actorSystem)
+    }}
   }
 }
