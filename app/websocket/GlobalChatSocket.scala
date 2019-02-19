@@ -2,12 +2,12 @@ package websocket
 
 import actor.GlobalChatActor
 import akka.actor.ActorSystem
-import akka.stream.Materializer
+import akka.stream.{Materializer, OverflowStrategy}
+import helper.ExtendedActorFlow
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
 import play.api.mvc._
-import play.api.libs.streams.ActorFlow
 
 import scala.concurrent.ExecutionContext
 
@@ -20,8 +20,8 @@ class GlobalChatSocket @Inject()
     new ApiResponse(code = 200, message = "Opens websocket connection and returns sent message")
   ))
   def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
-    ActorFlow.actorRef { out => {
-      GlobalChatActor.props(out)
-    }}
+    ExtendedActorFlow.actorRef( out =>
+      GlobalChatActor.props(out), 32, OverflowStrategy.dropNew, Some("GlobalChat")
+    )
   }
 }
