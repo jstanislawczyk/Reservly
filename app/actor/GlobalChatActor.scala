@@ -10,6 +10,6 @@ object GlobalChatActor {
 class GlobalChatActor (out: ActorRef)(implicit executionContext: ExecutionContext) extends Actor {
   def receive: PartialFunction[Any, Unit] = {
     case msg: String =>
-      out ! s"[GLOBAL_CHAT] $msg"
+      out ! s"$msg"
   }
 }
