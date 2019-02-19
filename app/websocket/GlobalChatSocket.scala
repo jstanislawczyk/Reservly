@@ -3,7 +3,7 @@ package websocket
 import actor.GlobalChatActor
 import akka.actor.ActorSystem
 import akka.stream.{Materializer, OverflowStrategy}
-import helper.ExtendedActorFlow
+import helper.{ExtendedActorFlow, GlobalActorRegister}
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
@@ -20,8 +20,35 @@ class GlobalChatSocket @Inject()
     new ApiResponse(code = 200, message = "Opens websocket connection and returns sent message")
   ))
   def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
-    ExtendedActorFlow.actorRef( out =>
-      GlobalChatActor.props(out), 32, OverflowStrategy.dropNew, Some("GlobalChat")
+
+    val actorId = getFreeActorId
+
+    ExtendedActorFlow.actorRef(out =>
+      GlobalChatActor.props(out), 32, OverflowStrategy.dropNew, Some(s"GlobalChat-$actorId")
     )
+  }
+
+  private def getFreeActorId: Int = {
+    var actorId = 0
+    var actorNotCreated = true
+
+    while(actorNotCreated) {
+      actorId += 1
+
+      if(actorWithGivenIdDoesNotExists(actorId)) {
+        registerNewActor(actorId)
+        actorNotCreated = false
+      }
+    }
+
+    actorId
+  }
+
+  private def actorWithGivenIdDoesNotExists(actorId: Int): Boolean = {
+    !GlobalActorRegister.actorRegister.contains(actorId)
+  }
+
+  private def registerNewActor(actorId: Int): Unit = {
+    GlobalActorRegister.actorRegister += actorId
   }
 }
