@@ -4,7 +4,6 @@ import akka.actor._
 import akka.stream.scaladsl.{Keep, Sink, Source, Flow}
 import akka.stream.{Materializer, OverflowStrategy}
 
-
 object ExtendedActorFlow {
   def actorRef[In, Out]
   (props: ActorRef => Props, bufferSize: Int = 16, overflowStrategy: OverflowStrategy = OverflowStrategy.dropNew, maybeName: Option[String] = None)
@@ -15,15 +14,15 @@ object ExtendedActorFlow {
 
     def flowActorProps: Props = {
       Props(new Actor {
-        val flowActor = context.watch(context.actorOf(props(outActor), "flowActor"))
+        val flowActor: ActorRef = context.watch(context.actorOf(props(outActor), "flowActor"))
 
-        def receive = {
+        def receive: PartialFunction[Any, Unit] = {
           case Status.Success(_) | Status.Failure(_) => flowActor ! PoisonPill
           case Terminated(_) => context.stop(self)
           case other => flowActor ! other
         }
 
-        override def supervisorStrategy = OneForOneStrategy() { case _ => SupervisorStrategy.Stop }
+        override def supervisorStrategy: OneForOneStrategy = OneForOneStrategy() { case _ => SupervisorStrategy.Stop }
       })
     }
 
