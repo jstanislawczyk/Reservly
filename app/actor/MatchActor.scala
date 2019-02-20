@@ -22,7 +22,7 @@ class MatchActor (repository: MatchRepository, out: ActorRef, actorSystem: Actor
       idleConnectionBreakPrevent()
 
       repository.getAllMatchesWithPlayers().map { matches =>
-        out ! s"(MATCHES) ${Json.toJson(matches)}"
+        out ! Json.toJson(matches)
       }
   }
 

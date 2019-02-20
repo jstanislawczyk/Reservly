@@ -6,18 +6,17 @@ import akka.actor._
 import scala.concurrent.ExecutionContext
 
 object GlobalChatActor {
-  def props(out: ActorRef, actorSystem: ActorSystem)(implicit executionContext: ExecutionContext)
-    = Props(new GlobalChatActor(out, actorSystem))
+  def props(out: ActorRef)
+    = Props(new GlobalChatActor(out))
 }
 
-class GlobalChatActor (out: ActorRef, actorSystem: ActorSystem)(implicit executionContext: ExecutionContext) extends Actor {
+class GlobalChatActor (out: ActorRef) extends Actor {
   def receive: PartialFunction[Any, Unit] = {
     case msg: String =>
-      out ! s"$msg"
+      out ! msg
   }
 
   override def postStop(): Unit = {
-    val globalChatRegister = new GlobalChatActorRegister(actorSystem)
-    globalChatRegister.unregisterClosedSockets()
+    GlobalChatActorRegister.unregisterClosedSocket(out.path.toString)
   }
 }
