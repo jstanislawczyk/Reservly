@@ -1,9 +1,10 @@
 package websocket
 
 import actor.GlobalChatActor
+import actorRegister.GlobalChatActorRegister
 import akka.actor.ActorSystem
 import akka.stream.{Materializer, OverflowStrategy}
-import helper.{ExtendedActorFlow, GlobalActorRegister}
+import helper.ExtendedActorFlow
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
@@ -24,7 +25,7 @@ class GlobalChatSocket @Inject()
     val actorId = getFreeActorId
 
     ExtendedActorFlow.actorRef(out =>
-      GlobalChatActor.props(out), 32, OverflowStrategy.dropNew, Some(s"GlobalChat-$actorId")
+      GlobalChatActor.props(out, actorSystem), 32, OverflowStrategy.dropNew, Some(s"GlobalChat-$actorId")
     )
   }
 
@@ -45,10 +46,10 @@ class GlobalChatSocket @Inject()
   }
 
   private def actorWithGivenIdDoesNotExists(actorId: Int): Boolean = {
-    !GlobalActorRegister.actorRegister.contains(actorId)
+    !GlobalChatActorRegister.actorRegister.contains(actorId)
   }
 
   private def registerNewActor(actorId: Int): Unit = {
-    GlobalActorRegister.actorRegister += actorId
+    GlobalChatActorRegister.actorRegister += actorId
   }
 }
