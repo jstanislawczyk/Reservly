@@ -3,12 +3,11 @@ package websocket
 import actor.GlobalChatActor
 import actorRegister.GlobalChatActorRegister
 import akka.actor.ActorSystem
-import akka.stream.{Materializer, OverflowStrategy}
-import helper.ExtendedActorFlow
+import akka.stream.Materializer
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject.Inject
-import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents}
-import play.api.mvc._
+import play.api.libs.streams.ActorFlow
+import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents, _}
 
 import scala.concurrent.ExecutionContext
 
@@ -18,14 +17,16 @@ class GlobalChatSocket @Inject()
   (implicit ec: ExecutionContext, actorSystem: ActorSystem, mat: Materializer) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Opens websocket connection and returns sent message")
+    new ApiResponse(code = 200, message = "Opens websocket connection which returns sent message to all connected clients")
   ))
   def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
 
     val actorId = getFreeActorId
 
-    ExtendedActorFlow.actorRef(out =>
-      GlobalChatActor.props(out, actorSystem), 32, OverflowStrategy.dropNew, Some(s"GlobalChat-$actorId")
+    ActorFlow.actorRef(out => {
+        registerNewActor(actorId, out.path.toString)
+        GlobalChatActor.props(out)
+      }
     )
   }
 
@@ -37,7 +38,6 @@ class GlobalChatSocket @Inject()
       actorId += 1
 
       if(actorWithGivenIdDoesNotExists(actorId)) {
-        registerNewActor(actorId)
         actorNotCreated = false
       }
     }
@@ -49,7 +49,7 @@ class GlobalChatSocket @Inject()
     !GlobalChatActorRegister.actorRegister.contains(actorId)
   }
 
-  private def registerNewActor(actorId: Int): Unit = {
-    GlobalChatActorRegister.actorRegister += actorId
+  private def registerNewActor(actorId: Int, actorPath: String): Unit = {
+    GlobalChatActorRegister.actorRegister.put(actorId, actorPath)
   }
 }
