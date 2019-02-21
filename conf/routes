@@ -19,7 +19,7 @@ DELETE          /matches/:matchId               controller.MatchController.delet
 
 
 # Match Websocket
-GET             /socket/matches                 websocket.MatchSocket.getMatches()
+GET             /socket/matches                 websocket.MatchListSocket.getMatches()
 
 
 # Chat Websocket
