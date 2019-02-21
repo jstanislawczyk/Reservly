@@ -1,7 +1,7 @@
 package websocket
 
 import actor.MatchListActor
-import actorRegister.{GlobalChatActorRegister, MatchListActorRegister}
+import actorRegister.MatchListActorRegister
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
