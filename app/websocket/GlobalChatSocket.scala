@@ -20,36 +20,14 @@ class GlobalChatSocket @Inject()
     new ApiResponse(code = 200, message = "Opens global chat websocket connection")
   ))
   def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
-
-    val actorId = getFreeActorId
-
     ActorFlow.actorRef(out => {
-        registerNewActor(actorId, out.path.toString)
-        GlobalChatActor.props(out, actorSystem)
-      }
-    )
+      registerNewActor(actorSystem, out.path.toString)
+      GlobalChatActor.props(out, actorSystem)
+    })
   }
 
-  private def getFreeActorId: Int = {
-    var actorId = 0
-    var actorNotCreated = true
-
-    while(actorNotCreated) {
-      actorId += 1
-
-      if(actorWithGivenIdDoesNotExists(actorId)) {
-        actorNotCreated = false
-      }
-    }
-
-    actorId
-  }
-
-  private def actorWithGivenIdDoesNotExists(actorId: Int): Boolean = {
-    !GlobalChatActorRegister.actorRegister.contains(actorId)
-  }
-
-  private def registerNewActor(actorId: Int, actorPath: String): Unit = {
-    GlobalChatActorRegister.actorRegister.put(actorId, actorPath)
+  private def registerNewActor(actorSystem: ActorSystem, actorPath: String): Unit = {
+    val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
+    globalChatActorRegister.registerNewActor(actorPath)
   }
 }

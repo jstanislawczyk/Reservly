@@ -23,4 +23,28 @@ class GlobalChatActorRegister(actorSystem: ActorSystem) {
       actorSystem.actorSelection(actor._2) ! message
     )
   }
+
+  def registerNewActor(actorPath: String): Unit = {
+    val freeActorId = getFreeActorId
+    actorRegister.put(freeActorId, actorPath)
+  }
+
+  private def getFreeActorId: Int = {
+    var actorId = 0
+    var actorNotCreated = true
+
+    while(actorNotCreated) {
+      actorId += 1
+
+      if(actorWithGivenIdDoesNotExists(actorId)) {
+        actorNotCreated = false
+      }
+    }
+
+    actorId
+  }
+
+  private def actorWithGivenIdDoesNotExists(actorId: Int): Boolean = {
+    !actorRegister.contains(actorId)
+  }
 }
