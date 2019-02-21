@@ -1,6 +1,7 @@
 package websocket
 
-import actor.MatchActor
+import actor.MatchListActor
+import actorRegister.{GlobalChatActorRegister, MatchListActorRegister}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
@@ -12,7 +13,7 @@ import repository.MatchRepository
 import scala.concurrent.ExecutionContext
 
 @Api("MatchSocket")
-class MatchSocket @Inject()
+class MatchListSocket @Inject()
   (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem )
   (implicit ec: ExecutionContext, system: ActorSystem, mat: Materializer) extends MessagesAbstractController(cc) {
 
@@ -21,7 +22,13 @@ class MatchSocket @Inject()
   ))
   def getMatches(): WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef { out => {
-      MatchActor.props(repository, out, actorSystem)
+      registerNewActor(actorSystem, out.path.toString)
+      MatchListActor.props(repository, out, actorSystem)
     }}
+  }
+
+  private def registerNewActor(actorSystem: ActorSystem, actorPath: String): Unit = {
+    val matchListActorRegister = new MatchListActorRegister(actorSystem)
+    matchListActorRegister.registerNewActor(actorPath)
   }
 }

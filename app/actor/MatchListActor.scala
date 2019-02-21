@@ -8,22 +8,17 @@ import repository.MatchRepository
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-object MatchActor {
+object MatchListActor {
   def props(repository: MatchRepository, out: ActorRef, actorSystem: ActorSystem)(implicit executionContext: ExecutionContext)
-    = Props(new MatchActor(repository, out, actorSystem))
+    = Props(new MatchListActor(repository, out, actorSystem))
 }
 
-class MatchActor (repository: MatchRepository, out: ActorRef, actorSystem: ActorSystem)
-                (implicit executionContext: ExecutionContext) extends Actor {
+class MatchListActor(repository: MatchRepository, out: ActorRef, actorSystem: ActorSystem)
+                    (implicit executionContext: ExecutionContext) extends Actor {
 
   def receive: PartialFunction[Any, Unit] = {
     case _: String =>
-
       idleConnectionBreakPrevent()
-
-      repository.getAllMatchesWithPlayers().map { matches =>
-        out ! Json.toJson(matches)
-      }
   }
 
   def idleConnectionBreakPrevent(): Unit = {

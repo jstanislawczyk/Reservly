@@ -1,6 +1,9 @@
 package controller
 
+import actorRegister.MatchListActorRegister
 import akka.actor.ActorSystem
+import helper.UpdateType
+import helper.UpdateType.UpdateType
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
 import model.Match
@@ -64,7 +67,7 @@ class MatchController @Inject()
     val matchObject = Match.parseMatchJson(matchJson)
 
     repository.saveMatch(matchObject.playerId, matchObject.startDate, matchObject.endDate).map(game => {
-      actorSystem.actorSelection("/user/*") ! ""
+      broadcastMessageWithUpdateForMatchesList(UpdateType.SAVED, Json.toJson(game).toString, actorSystem)
       Ok(s"Match [$game] saved")
     })
   }
@@ -74,12 +77,17 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
-
     repository.deleteMatchById(matchId).map {
       case 0 => NotFound(s"Match [id = $matchId] not found")
       case 1 =>
-        actorSystem.actorSelection("/user/*") ! ""
+        broadcastMessageWithUpdateForMatchesList(UpdateType.DELETED, matchId.toString, actorSystem)
         Ok(s"Match [id = $matchId] deleted")
     }
+  }
+
+  private def broadcastMessageWithUpdateForMatchesList(typeOfUpdate: UpdateType, message: String, actorSystem: ActorSystem): Unit = {
+    val matchListActorRegister = new MatchListActorRegister(actorSystem)
+
+    matchListActorRegister.broadcastMessage(s"[${typeOfUpdate.toString}] $message")
   }
 }
