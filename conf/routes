@@ -25,6 +25,8 @@ GET             /socket/matches                 websocket.MatchSocket.getMatches
 # Chat Websocket
 GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat()
 
+# Chat Controller
+POST            /chat/global                    controller.ChatController.sendMessageToGlobalChat()
 
 # Swagger routes
 GET             /assets/*file                   controllers.Assets.at(path="/public", file)
