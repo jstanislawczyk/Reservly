@@ -17,7 +17,7 @@ class GlobalChatSocket @Inject()
   (implicit ec: ExecutionContext, actorSystem: ActorSystem, mat: Materializer) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Opens websocket connection which returns sent message to all connected clients")
+    new ApiResponse(code = 200, message = "Opens global chat websocket connection")
   ))
   def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
 
@@ -25,7 +25,7 @@ class GlobalChatSocket @Inject()
 
     ActorFlow.actorRef(out => {
         registerNewActor(actorId, out.path.toString)
-        GlobalChatActor.props(out)
+        GlobalChatActor.props(out, actorSystem)
       }
     )
   }
