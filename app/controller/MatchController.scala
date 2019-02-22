@@ -1,40 +1,39 @@
 package controller
 
-import actorRegister.MatchListActorRegister
-import akka.actor.ActorSystem
-import helper.UpdateType
-import helper.UpdateType.UpdateType
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
 import model.Match
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents}
-import repository.MatchRepository
+import service.MatchService
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 @Api("MatchController")
-class MatchController @Inject()
-  (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem)
+class MatchController @Inject() (matchService: MatchService, cc: MessagesControllerComponents)
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all matches list")
   ))
   def getAllMatches: Action[AnyContent] = Action.async { implicit request =>
-    repository.getAllMatches().map { matches =>
-      Ok(Json.toJson(matches))
-    }
+    matchService
+      .getAllMatches
+      .map { matches =>
+        Ok(Json.toJson(matches))
+      }
   }
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all matches list with players")
   ))
   def getAllMatchesWithPlayers: Action[AnyContent] = Action.async { implicit request =>
-    repository.getAllMatchesWithPlayers().map { matches =>
-      Ok(Json.toJson(matches))
-    }
+    matchService
+      .getAllMatchesWithPlayers
+      .map { matches =>
+        Ok(Json.toJson(matches))
+      }
   }
 
   @ApiResponses(Array(
@@ -42,10 +41,14 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def getMatchById(@ApiParam("The id used to search for the match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
-    repository.getMatchById(matchId).map {
-      case None => NotFound(s"Match [id = $matchId] not found")
-      case Some(game) => Ok(Json.toJson(game))
-    }
+    matchService
+      .getMatchById(matchId)
+      .map {
+        case None =>
+          NotFound(s"Match [id = $matchId] not found")
+        case Some(game) =>
+          Ok(Json.toJson(game))
+      }
   }
 
   @ApiResponses(Array(
@@ -53,10 +56,14 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def getMatchByIdWithPlayer(@ApiParam("The id used to search for the match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
-    repository.getMatchByIdWithPlayer(matchId).map {
-      case None => NotFound(s"Match [id = $matchId] not found")
-      case Some(game) => Ok(Json.toJson(game))
-    }
+    matchService
+      .getMatchByIdWithPlayer(matchId)
+      .map {
+        case None =>
+          NotFound(s"Match [id = $matchId] not found")
+        case Some(game) =>
+          Ok(Json.toJson(game))
+      }
   }
 
   @ApiResponses(Array(
@@ -64,12 +71,13 @@ class MatchController @Inject()
   ))
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
-    val matchObject = Match.parseMatchJson(matchJson)
+    val matchToSave = Match.parseMatchJson(matchJson)
 
-    repository.saveMatch(matchObject.playerId, matchObject.startDate, matchObject.endDate).map(game => {
-      broadcastMessageWithUpdateForMatchesList(UpdateType.SAVED, Json.toJson(game).toString, actorSystem)
-      Ok(s"Match [$game] saved")
-    })
+    matchService
+      .saveMatch(matchToSave)
+      .map(savedMatch => {
+        Ok(s"Match [$savedMatch] saved")
+      })
   }
 
   @ApiResponses(Array(
@@ -77,17 +85,13 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
-    repository.deleteMatchById(matchId).map {
-      case 0 => NotFound(s"Match [id = $matchId] not found")
-      case 1 =>
-        broadcastMessageWithUpdateForMatchesList(UpdateType.DELETED, matchId.toString, actorSystem)
-        Ok(s"Match [id = $matchId] deleted")
-    }
-  }
-
-  private def broadcastMessageWithUpdateForMatchesList(typeOfUpdate: UpdateType, message: String, actorSystem: ActorSystem): Unit = {
-    val matchListActorRegister = new MatchListActorRegister(actorSystem)
-
-    matchListActorRegister.broadcastMessage(s"[${typeOfUpdate.toString}] $message")
+    matchService
+      .deleteMatchById(matchId)
+      .map {
+        case 0 =>
+          NotFound(s"Match [id = $matchId] not found")
+        case 1 =>
+          Ok(s"Match [id = $matchId] deleted")
+      }
   }
 }

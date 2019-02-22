@@ -31,11 +31,11 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   private val matches = TableQuery[MatchesTable]
   private val players = playersRepository.players
 
-  def getAllMatches(): Future[Seq[Match]] = db.run {
+  def getAllMatches: Future[Seq[Match]] = db.run {
     matches.result
   }
 
-  def getAllMatchesWithPlayers(): Future[Seq[(Match, Player)]] = {
+  def getAllMatchesWithPlayers: Future[Seq[(Match, Player)]] = {
     val getMatchTableWithPlayerTableQuery =
       matches
         .join(players)
@@ -62,7 +62,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     }
   }
 
-  def saveMatch(playerId: Long, startDate: Timestamp, endDate: Timestamp): Future[Match] = db.run {
+  def saveMatch(matchToSave: Match): Future[Match] = db.run {
     (
       matches.map(game =>
         (game.startDate, game.endDate, game.playerId)
@@ -71,7 +71,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       returning matches.map(_.id)
         into ((data, id) => Match(id, data._1, data._2, data._3))
       
-    ) += (startDate, endDate, playerId)
+    ) += (matchToSave.startDate, matchToSave.endDate, matchToSave.playerId)
   }
 
   def deleteMatchById(matchId: Long): Future[Int] = db.run {
