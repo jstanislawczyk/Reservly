@@ -24,7 +24,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
 
   val players = TableQuery[PlayersTable]
 
-  def getAllPlayers(): Future[Seq[Player]] = db.run {
+  def getAllPlayers: Future[Seq[Player]] = db.run {
     players.result
   }
 

@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
 
   def getAllPlayers: Future[Seq[Player]] = {
-    playerRepository.getAllPlayers()
+    playerRepository.getAllPlayers
   }
 
   def getPlayerById(playerId: Long): Future[Option[Player]] = {
