@@ -35,7 +35,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
       .headOption
   }
 
-  def savePlayer(firstName: String, lastName: String): Future[Player] = db.run {
+  def savePlayer(player: Player): Future[Player] = db.run {
     (
       players.map(player =>
         (player.firstName, player.lastName)
@@ -43,7 +43,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
 
       returning players.map(_.id)
         into ((data, id) => Player(id, data._1, data._2))
-    ) += (firstName, lastName)
+    ) += (player.firstName, player.lastName)
   }
 
   def deletePlayerById(playerId: Long): Future[Int] = db.run {

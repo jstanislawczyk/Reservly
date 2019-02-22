@@ -5,23 +5,25 @@ import javax.inject._
 import model.Player
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository.PlayerRepository
+import service.PlayerService
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 @Api("PlayerController")
 class PlayerController @Inject()
-  (repository: PlayerRepository, cc: MessagesControllerComponents )
+  (playerService: PlayerService, cc: MessagesControllerComponents )
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Returns all players list")
   ))
   def getAllPlayers: Action[AnyContent] = Action.async { implicit request =>
-    repository.getAllPlayers().map { players =>
-      Ok(Json.toJson(players))
-    }
+    playerService
+      .getAllPlayers
+      .map(player =>
+        Ok(Json.toJson(player))
+      )
   }
 
   @ApiResponses(Array(
@@ -29,22 +31,25 @@ class PlayerController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing player with given id")
   ))
   def getPlayerById(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
-    repository.getPlayerById(playerId).map {
-      case None => NotFound(s"Player [id = $playerId] not found")
-      case Some(player) => Ok(Json.toJson(player))
-    }
+    playerService
+      .getPlayerById(playerId)
+      .map {
+        case None => NotFound(s"Player [id = $playerId] not found")
+        case Some(player) => Ok(Json.toJson(player))
+      }
   }
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Saves given player. Player object is parsed from player request body (in JSON)")
   ))
   def savePlayer(): Action[AnyContent] = Action.async { implicit request =>
-    val playerJson = request.body.asJson.get.toString()
-    val player = Player.parsePlayerJson(playerJson)
+    val player = getPlayerFromRequest(request)
 
-    repository.savePlayer(player.firstName, player.lastName).map(player =>
-      Ok(s"Player [$player] saved")
-    )
+    playerService
+      .savePlayer(player)
+      .map(savedPlayer =>
+        Ok(s"Player [$savedPlayer] saved")
+      )
   }
 
   @ApiResponses(Array(
@@ -52,9 +57,16 @@ class PlayerController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing player with given id")
   ))
   def deletePlayerById(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
-    repository.deletePlayerById(playerId).map {
-      case 0 => NotFound(s"Player [id = $playerId] not found")
-      case 1 => Ok(s"Player [id = $playerId] deleted")
-    }
+    playerService
+      .deletePlayerById(playerId)
+      .map {
+        case 0 => NotFound(s"Player [id = $playerId] not found")
+        case 1 => Ok(s"Player [id = $playerId] deleted")
+      }
+  }
+
+  private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
+    val playerJson = request.body.asJson.get.toString()
+    Player.parsePlayerJson(playerJson)
   }
 }
