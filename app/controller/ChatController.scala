@@ -7,10 +7,8 @@ import play.api.mvc._
 import service.ChatService
 
 @Api("ChatController")
-class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem) extends AbstractController(cc) {
-
-  private val chatService = new ChatService()
-
+class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: ChatService) extends AbstractController(cc) {
+  
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Broadcast given message to global chat")
   ))
