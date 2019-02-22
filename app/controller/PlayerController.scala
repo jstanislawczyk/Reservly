@@ -1,6 +1,6 @@
 package controller
 
-import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
+import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject._
 import model.Player
 import play.api.libs.json.Json
@@ -30,7 +30,7 @@ class PlayerController @Inject()
     new ApiResponse(code = 200, message = "Returns player by id"),
     new ApiResponse(code = 404, message = "Returns information about missing player with given id")
   ))
-  def getPlayerById(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
+  def getPlayerById(@ApiParam("The id used to search for the player") playerId: Long): Action[AnyContent] = Action.async { implicit request =>
     playerService
       .getPlayerById(playerId)
       .map {
@@ -58,7 +58,7 @@ class PlayerController @Inject()
     new ApiResponse(code = 200, message = "Deletes player by id"),
     new ApiResponse(code = 404, message = "Returns information about missing player with given id")
   ))
-  def deletePlayerById(playerId: Long): Action[AnyContent] = Action.async { implicit request =>
+  def deletePlayerById(@ApiParam("The id used to delete player") playerId: Long): Action[AnyContent] = Action.async { implicit request =>
     playerService
       .deletePlayerById(playerId)
       .map {
