@@ -34,8 +34,10 @@ class PlayerController @Inject()
     playerService
       .getPlayerById(playerId)
       .map {
-        case None => NotFound(s"Player [id = $playerId] not found")
-        case Some(player) => Ok(Json.toJson(player))
+        case None =>
+          NotFound(s"Player [id = $playerId] not found")
+        case Some(player) =>
+          Ok(Json.toJson(player))
       }
   }
 
@@ -60,8 +62,10 @@ class PlayerController @Inject()
     playerService
       .deletePlayerById(playerId)
       .map {
-        case 0 => NotFound(s"Player [id = $playerId] not found")
-        case 1 => Ok(s"Player [id = $playerId] deleted")
+        case 0 =>
+          NotFound(s"Player [id = $playerId] not found")
+        case 1 =>
+          Ok(s"Player [id = $playerId] deleted")
       }
   }
 
