@@ -2,7 +2,6 @@ package actor
 
 import akka.actor._
 import akka.actor.{ActorRef, ActorSystem}
-import play.api.libs.json.Json
 import repository.MatchRepository
 
 import scala.concurrent.ExecutionContext
