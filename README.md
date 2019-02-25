@@ -1,5 +1,5 @@
-# Queserver
-A tool for reserving Fifa match queue
+# Reservly
+Reservly is a tool for reserving game match queue
 
 ## Backend technology stack
 * Scala
