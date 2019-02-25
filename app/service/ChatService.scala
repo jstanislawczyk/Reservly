@@ -2,18 +2,27 @@ package service
 
 import actorRegister.GlobalChatActorRegister
 import akka.actor.ActorSystem
+import model.ChatMessage
 import play.api.mvc.{AnyContent, Request}
+import validation.ChatMessageValidator
 
 class ChatService {
 
-  def sendMessageToGlobalChat(actorSystem: ActorSystem, request: Request[AnyContent]): Unit = {
-    broadcastMessage(actorSystem, request)
+  def handleGlobalChatMessageBroadcast(actorSystem: ActorSystem, request: Request[AnyContent]): Boolean = {
+    val chatMessage = ChatMessage.parseErrorMessageJson(request.body.asJson.get.toString())
+    val isMessageValid = ChatMessageValidator.validate(chatMessage)
+
+    if(isMessageValid) {
+      broadcastMessage(actorSystem, chatMessage)
+    }
+
+    isMessageValid
   }
 
-  private def broadcastMessage(actorSystem: ActorSystem, request: Request[AnyContent]): Unit = {
-    val message = request.body.asJson.get.toString()
+  private def broadcastMessage(actorSystem: ActorSystem, chatMessage: ChatMessage): Unit = {
     val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
+    val chatMessageAsJson = ChatMessage.createMessageJson(chatMessage)
 
-    globalChatActorRegister.broadcastMessage(message)
+    globalChatActorRegister.broadcastMessage(chatMessageAsJson)
   }
 }
