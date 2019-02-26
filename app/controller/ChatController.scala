@@ -6,7 +6,7 @@ import javax.inject.Inject
 import model.ErrorMessage
 import play.api.mvc._
 import service.ChatService
-import validation.ChatMessageValidatorValues
+import validation.chatMessage.ChatMessageValidatorValues
 
 @Api("ChatController")
 class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: ChatService) extends AbstractController(cc) {
