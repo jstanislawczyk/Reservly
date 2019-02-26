@@ -2,12 +2,13 @@ package controller
 
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject._
-import model.Player
+import model.{ErrorMessage, Player}
 import play.api.libs.json.Json
 import play.api.mvc._
 import service.PlayerService
+import validation.player.PlayerValidator
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 @Api("PlayerController")
@@ -47,11 +48,15 @@ class PlayerController @Inject()
   def savePlayer(): Action[AnyContent] = Action.async { implicit request =>
     val player = getPlayerFromRequest(request)
 
-    playerService
-      .savePlayer(player)
-      .map(savedPlayer =>
-        Ok(s"Player [$savedPlayer] saved")
-      )
+    if(isPlayerValid(player)) {
+      playerService
+        .savePlayer(player)
+        .map(savedPlayer =>
+          Ok(s"Player [$savedPlayer] saved")
+        )
+    } else {
+      Future{BadRequest(createErrorMessage)}
+    }
   }
 
   @ApiResponses(Array(
@@ -72,5 +77,18 @@ class PlayerController @Inject()
   private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
     val playerJson = request.body.asJson.get.toString()
     Player.parsePlayerJson(playerJson)
+  }
+
+  private def isPlayerValid(player: Player): Boolean = {
+    PlayerValidator.validate(player)
+  }
+
+  private def createErrorMessage: String = {
+    ErrorMessage.createErrorMessageJson(
+      new ErrorMessage(
+        "400",
+        s"Player data invalid"
+      )
+    )
   }
 }

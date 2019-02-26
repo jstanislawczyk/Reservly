@@ -4,7 +4,7 @@ import actorRegister.GlobalChatActorRegister
 import akka.actor.ActorSystem
 import model.ChatMessage
 import play.api.mvc.{AnyContent, Request}
-import validation.ChatMessageValidator
+import validation.chatMessage.ChatMessageValidator
 
 class ChatService {
 
