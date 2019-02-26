@@ -2,12 +2,13 @@ package controller
 
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
-import model.Match
+import model.{ErrorMessage, Match}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents}
 import service.MatchService
+import validation.`match`.MatchValidator
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 @Api("MatchController")
@@ -73,11 +74,15 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
     val matchJson = request.body.asJson.get.toString()
     val matchToSave = Match.parseMatchJson(matchJson)
 
-    matchService
-      .saveMatch(matchToSave)
-      .map(savedMatch => {
-        Ok(s"Match [$savedMatch] saved")
-      })
+    if(isMatchValid(matchToSave)) {
+      matchService
+        .saveMatch(matchToSave)
+        .map(savedMatch => {
+          Ok(s"Match [$savedMatch] saved")
+        })
+    } else {
+      Future {BadRequest(createErrorMessage)}
+    }
   }
 
   @ApiResponses(Array(
@@ -93,5 +98,18 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
         case 1 =>
           Ok(s"Match [id = $matchId] deleted")
       }
+  }
+
+  private def isMatchValid(game: Match): Boolean = {
+    MatchValidator.validate(game)
+  }
+
+  private def createErrorMessage: String = {
+    ErrorMessage.createErrorMessageJson(
+      new ErrorMessage(
+        "400",
+        s"Match data invalid"
+      )
+    )
   }
 }
