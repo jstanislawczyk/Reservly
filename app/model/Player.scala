@@ -16,5 +16,10 @@ object Player {
     gson.fromJson(playerJson, classOf[Player])
   }
 
+  def createJsonFromPlayer(player: Player): String = {
+    val gson = new Gson
+    gson.toJson(player)
+  }
+
   implicit val personFormat: OFormat[Player] = Json.format[Player]
 }
