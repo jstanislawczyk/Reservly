@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import model.{ErrorMessage, Match}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents}
+import serializer.{ErrorMessageJsonSerializer, MatchJsonSerializer}
 import service.MatchService
 import validation.`match`.MatchValidator
 
@@ -72,7 +73,7 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
   ))
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
-    val matchToSave = Match.parseMatchJson(matchJson)
+    val matchToSave = MatchJsonSerializer.fromJson(matchJson)
 
     if(isMatchValid(matchToSave)) {
       matchService
@@ -105,7 +106,7 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
   }
 
   private def createErrorMessage: String = {
-    ErrorMessage.createErrorMessageJson(
+    ErrorMessageJsonSerializer.toJson(
       new ErrorMessage(
         "400",
         s"Match data invalid"

@@ -19,11 +19,11 @@ DELETE          /matches/:matchId               controller.MatchController.delet
 
 
 # Match Websocket
-GET             /socket/matches                 websocket.MatchListSocket.getMatches()
+GET             /socket/matches                 websocket.MatchListSocket.getMatches
 
 
 # Chat Websocket
-GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat()
+GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat
 
 # Chat Controller
 POST            /chat/global                    controller.ChatController.sendMessageToGlobalChat()

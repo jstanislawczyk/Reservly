@@ -19,7 +19,7 @@ class GlobalChatSocket @Inject()
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Opens global chat websocket connection")
   ))
-  def globalChat(): WebSocket = WebSocket.accept[String, String] { _ =>
+  def globalChat: WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef(out => {
       registerNewActor(actorSystem, out.path.toString)
       GlobalChatActor.props(out, actorSystem)

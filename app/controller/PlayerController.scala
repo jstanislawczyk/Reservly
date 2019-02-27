@@ -5,6 +5,7 @@ import javax.inject._
 import model.{ErrorMessage, Player}
 import play.api.libs.json.Json
 import play.api.mvc._
+import serializer.{ErrorMessageJsonSerializer, PlayerJsonSerializer}
 import service.PlayerService
 import validation.player.PlayerValidator
 
@@ -76,7 +77,7 @@ class PlayerController @Inject()
 
   private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
     val playerJson = request.body.asJson.get.toString()
-    Player.parsePlayerJson(playerJson)
+    PlayerJsonSerializer.fromJson(playerJson)
   }
 
   private def isPlayerValid(player: Player): Boolean = {
@@ -84,7 +85,7 @@ class PlayerController @Inject()
   }
 
   private def createErrorMessage: String = {
-    ErrorMessage.createErrorMessageJson(
+    ErrorMessageJsonSerializer.toJson(
       new ErrorMessage(
         "400",
         s"Player data invalid"
