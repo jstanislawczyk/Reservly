@@ -5,6 +5,7 @@ import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import model.ErrorMessage
 import play.api.mvc._
+import serializer.ErrorMessageJsonSerializer
 import service.ChatService
 import validation.chatMessage.ChatMessageValidatorValues
 
@@ -27,7 +28,7 @@ class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSyste
   private def createErrorMessage: String = {
     val values = ChatMessageValidatorValues
 
-    ErrorMessage.createErrorMessageJson(
+    ErrorMessageJsonSerializer.toJson(
       new ErrorMessage(
         "400",
         s"Size of the message should be between ${values.minimumMessageSize} and ${values.maximumMessageSize}"

@@ -20,7 +20,7 @@ class MatchListSocket @Inject()
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Opens websocket connection and returns last created matches in period of 60 seconds, or on match delete/save")
   ))
-  def getMatches(): WebSocket = WebSocket.accept[String, String] { _ =>
+  def getMatches: WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef { out => {
       registerNewActor(actorSystem, out.path.toString)
       MatchListActor.props(repository, out, actorSystem)
