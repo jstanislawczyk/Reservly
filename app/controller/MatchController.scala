@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 import model.{ErrorMessage, Match}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents}
+import security.Authorizer
 import serializer.{ErrorMessageJsonSerializer, MatchJsonSerializer}
 import service.MatchService
 import validation.`match`.MatchValidator
@@ -13,7 +14,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 @Api("MatchController")
-class MatchController @Inject() (matchService: MatchService, cc: MessagesControllerComponents)
+class MatchController @Inject()
+  (matchService: MatchService, authorizer: Authorizer, cc: MessagesControllerComponents)
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiResponses(Array(
@@ -74,15 +76,21 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
     val matchToSave = MatchJsonSerializer.fromJson(matchJson)
+    val playerId = request.headers.get("Auth-Id").getOrElse("0").toLong
 
     if(isMatchValid(matchToSave)) {
-      matchService
-        .saveMatch(matchToSave)
-        .map(savedMatch => {
-          Ok(s"Match [$savedMatch] saved")
-        })
+      authorizer.authorizePlayerAccess(playerId).flatMap {
+        case true =>
+          matchService
+            .saveMatch(matchToSave)
+            .map(savedMatch => {
+              Ok(s"Match [$savedMatch] saved")
+            })
+        case false =>
+          Future {BadRequest(createErrorMessage("403"))}
+      }
     } else {
-      Future {BadRequest(createErrorMessage)}
+      Future {BadRequest(createErrorMessage("400"))}
     }
   }
 
@@ -105,12 +113,21 @@ class MatchController @Inject() (matchService: MatchService, cc: MessagesControl
     MatchValidator.validate(game)
   }
 
-  private def createErrorMessage: String = {
+  private def createErrorMessage(httpCode: String): String = {
     ErrorMessageJsonSerializer.toJson(
       new ErrorMessage(
-        "400",
-        s"Match data invalid"
+        httpCode,
+        getMessageByCode(httpCode)
       )
     )
+  }
+
+  private def getMessageByCode(httpCode: String): String = {
+    httpCode match {
+      case "400" =>
+        "Match data invalid"
+      case "403" =>
+        "Access forbidden"
+    }
   }
 }
