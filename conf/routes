@@ -6,7 +6,6 @@ GET             /                               controller.HomeController.home()
 GET             /players                        controller.PlayerController.getAllPlayers()
 GET             /players/:playerId              controller.PlayerController.getPlayerById(playerId: Long)
 POST            /players                        controller.PlayerController.savePlayer()
-DELETE          /players/:playerId              controller.PlayerController.deletePlayerById(playerId: Long)
 
 
 # Matches Controller
@@ -25,8 +24,10 @@ GET             /socket/matches                 websocket.MatchListSocket.getMat
 # Chat Websocket
 GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat
 
+
 # Chat Controller
 POST            /chat/global                    controller.ChatController.sendMessageToGlobalChat()
+
 
 # Swagger routes
 GET             /assets/*file                   controllers.Assets.at(path="/public", file)
