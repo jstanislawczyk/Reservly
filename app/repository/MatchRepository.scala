@@ -62,7 +62,8 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     }
   }
 
-  def saveMatch(matchToSave: Match): Future[Match] = db.run {
+  def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = db.run {
+    println(playerId)
     (
       matches.map(game =>
         (game.startDate, game.endDate, game.playerId)
@@ -71,7 +72,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       returning matches.map(_.id)
         into ((data, id) => Match(id, data._1, data._2, data._3))
       
-    ) += (matchToSave.startDate, matchToSave.endDate, matchToSave.playerId)
+    ) += (matchToSave.startDate, matchToSave.endDate, playerId)
   }
 
   def deleteMatchById(matchId: Long): Future[Int] = db.run {

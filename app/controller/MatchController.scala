@@ -4,7 +4,7 @@ import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
 import model.{ErrorMessage, Match}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesAbstractController, MessagesControllerComponents}
+import play.api.mvc._
 import security.Authorizer
 import serializer.{ErrorMessageJsonSerializer, MatchJsonSerializer}
 import service.MatchService
@@ -76,13 +76,13 @@ class MatchController @Inject()
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
     val matchToSave = MatchJsonSerializer.fromJson(matchJson)
-    val playerId = request.headers.get("Auth-Id").getOrElse("0").toLong
+    val playerId = getPlayerAuthId(request)
 
     if(isMatchValid(matchToSave)) {
       authorizer.authorizePlayerAccess(playerId).flatMap {
         case true =>
           matchService
-            .saveMatch(matchToSave)
+            .saveMatch(matchToSave, playerId)
             .map(savedMatch => {
               Ok(s"Match [$savedMatch] saved")
             })
@@ -107,6 +107,10 @@ class MatchController @Inject()
         case 1 =>
           Ok(s"Match [id = $matchId] deleted")
       }
+  }
+
+  private def getPlayerAuthId(request: MessagesRequest[AnyContent]): Long = {
+    request.headers.get("Auth-Id").getOrElse("0").toLong
   }
 
   private def isMatchValid(game: Match): Boolean = {

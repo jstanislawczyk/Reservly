@@ -29,8 +29,8 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
     matchRepository.getMatchByIdWithPlayer(matchId)
   }
 
-  def saveMatch(matchToSave: Match): Future[Match] = {
-    val savedMatch = matchRepository.saveMatch(matchToSave)
+  def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = {
+    val savedMatch = matchRepository.saveMatch(matchToSave, playerId)
 
     savedMatch.map(savedMatch =>
       broadcastMessageWithUpdateForMatchesList(UpdateType.SAVED, Json.toJson(savedMatch).toString, actorSystem)
