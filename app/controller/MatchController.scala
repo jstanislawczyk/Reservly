@@ -99,14 +99,21 @@ class MatchController @Inject()
     new ApiResponse(code = 404, message = "Returns information about missing match with given id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
-    matchService
-      .deleteMatchById(matchId)
-      .map {
-        case 0 =>
-          NotFound(s"Match [id = $matchId] not found")
-        case 1 =>
-          Ok(s"Match [id = $matchId] deleted")
-      }
+    val playerId = getPlayerAuthId(request)
+
+    authorizer.authorizePlayerAccess(playerId).flatMap {
+      case true =>
+        matchService
+          .deleteMatchById(matchId)
+          .map {
+            case 0 =>
+              NotFound(s"Match [id = $matchId] not found")
+            case 1 =>
+              Ok(s"Match [id = $matchId] deleted")
+          }
+      case false =>
+        Future {BadRequest(createErrorMessage("403"))}
+    }
   }
 
   private def getPlayerAuthId(request: MessagesRequest[AnyContent]): Long = {
