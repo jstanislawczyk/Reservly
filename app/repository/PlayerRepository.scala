@@ -51,4 +51,11 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
       .filter(_.id === playerId)
       .delete
   }
+
+  def checkIfPlayerExists(playerId : Long): Future[Boolean] = db.run {
+    players
+      .filter(_.id === playerId)
+      .exists
+      .result
+  }
 }

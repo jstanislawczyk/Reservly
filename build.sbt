@@ -24,3 +24,5 @@ scalacOptions ++= Seq(
   "-deprecation",
   "-Xfatal-warnings"
 )
+
+resolvers += Resolver.sonatypeRepo("snapshots")

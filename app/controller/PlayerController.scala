@@ -60,21 +60,6 @@ class PlayerController @Inject()
     }
   }
 
-  @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Deletes player by id"),
-    new ApiResponse(code = 404, message = "Returns information about missing player with given id")
-  ))
-  def deletePlayerById(@ApiParam("The id used to delete player") playerId: Long): Action[AnyContent] = Action.async { implicit request =>
-    playerService
-      .deletePlayerById(playerId)
-      .map {
-        case 0 =>
-          NotFound(s"Player [id = $playerId] not found")
-        case 1 =>
-          Ok(s"Player [id = $playerId] deleted")
-      }
-  }
-
   private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
     val playerJson = request.body.asJson.get.toString()
     PlayerJsonSerializer.fromJson(playerJson)
