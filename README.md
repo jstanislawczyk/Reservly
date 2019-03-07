@@ -53,7 +53,7 @@ Swagger docs available at `localhost:9000/docs/`
 }
 ```
 
-### ErrorMessage
+### ResponseMessage
 ```javascript
 { 
   "httpCode": "404"             //[String: one of http codes]
