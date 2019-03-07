@@ -49,7 +49,7 @@ class MatchController @Inject()
       .getMatchById(matchId)
       .map {
         case None =>
-          NotFound(s"Match [id = $matchId] not found")
+          NotFound(ResponseMessage.createResponseMessageAsJson("404",s"Match [id = $matchId] not found"))
         case Some(game) =>
           Ok(Json.toJson(game))
       }
@@ -64,7 +64,7 @@ class MatchController @Inject()
       .getMatchByIdWithPlayer(matchId)
       .map {
         case None =>
-          NotFound(s"Match [id = $matchId] not found")
+          NotFound(ResponseMessage.createResponseMessageAsJson("404",s"Match [id = $matchId] not found"))
         case Some(game) =>
           Ok(Json.toJson(game))
       }
