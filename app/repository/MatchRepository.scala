@@ -63,7 +63,6 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   }
 
   def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = db.run {
-    println(playerId)
     (
       matches.map(game =>
         (game.startDate, game.endDate, game.playerId)
