@@ -39,8 +39,8 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
     savedMatch
   }
 
-  def deleteMatchById(matchId: Long): Future[Int] = {
-    val deleteMatchStatus = matchRepository.deleteMatchById(matchId)
+  def deletePlayerMatchById(matchId: Long, playerId: Long): Future[Int] = {
+    val deleteMatchStatus = matchRepository.deletePlayerMatchById(matchId, playerId)
 
     deleteMatchStatus.map {
       case 1 =>

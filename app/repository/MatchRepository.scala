@@ -74,9 +74,10 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     ) += (matchToSave.startDate, matchToSave.endDate, playerId)
   }
 
-  def deleteMatchById(matchId: Long): Future[Int] = db.run {
+  def deletePlayerMatchById(matchId: Long, playerId: Long): Future[Int] = db.run {
     matches
       .filter(_.id === matchId)
+      .filter(_.playerId === playerId)
       .delete
   }
 }

@@ -104,10 +104,10 @@ class MatchController @Inject()
     authorizer.authorizePlayerAccess(playerId).flatMap {
       case true =>
         matchService
-          .deleteMatchById(matchId)
+          .deletePlayerMatchById(matchId, playerId)
           .map {
             case 0 =>
-              NotFound(s"Match [id = $matchId] not found")
+              NotFound(s"Match [id = $matchId] not found or wrong player id")
             case 1 =>
               Ok(s"Match [id = $matchId] deleted")
           }
