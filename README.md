@@ -13,6 +13,15 @@ Reservly is a tool for reserving game match queue
 ## Frontend
 Frontend repository available [here](https://github.com/mtrybus2208/game-reservation-app) 
 
+## How to run
+#### IntelliJ
+* Install JDK11
+* Install scala support for IntelliJ
+* Import project to IntelliJ
+* In IntelliJ: Edit Configurations -> Add New Configuration -> Play
+* Use default config (with http://localhost:9000)
+* Run project with created config
+
 ## Swagger docs
 Swagger docs available at `localhost:9000/docs/`
 
