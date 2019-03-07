@@ -2,11 +2,11 @@ package controller
 
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject.{Inject, Singleton}
-import model.{ErrorMessage, Match}
+import model.{Match, ResponseMessage}
 import play.api.libs.json.Json
 import play.api.mvc._
 import security.Authorizer
-import serializer.{ErrorMessageJsonSerializer, MatchJsonSerializer}
+import serializer.MatchJsonSerializer
 import service.MatchService
 import validation.`match`.MatchValidator
 
@@ -87,16 +87,16 @@ class MatchController @Inject()
               Ok(s"Match [$savedMatch] saved")
             })
         case false =>
-          Future {BadRequest(createErrorMessage("403"))}
+          Future {BadRequest(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
       }
     } else {
-      Future {BadRequest(createErrorMessage("400"))}
+      Future {BadRequest(ResponseMessage.createResponseMessageAsJson("400","Match data invalid"))}
     }
   }
 
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Deletes match by id"),
-    new ApiResponse(code = 404, message = "Returns information about missing match with given id")
+    new ApiResponse(code = 404, message = "Returns information about missing match or wrong player with given match id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
     val playerId = getPlayerAuthId(request)
@@ -107,12 +107,12 @@ class MatchController @Inject()
           .deletePlayerMatchById(matchId, playerId)
           .map {
             case 0 =>
-              NotFound(s"Match [id = $matchId] not found or wrong player id")
+              NotFound(ResponseMessage.createResponseMessageAsJson("200", s"Match [id = $matchId] not found or wrong player id"))
             case 1 =>
-              Ok(s"Match [id = $matchId] deleted")
+              Ok(ResponseMessage.createResponseMessageAsJson("200", s"Match [id = $matchId] deleted"))
           }
       case false =>
-        Future {BadRequest(createErrorMessage("403"))}
+        Future {BadRequest(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
     }
   }
 
@@ -122,23 +122,5 @@ class MatchController @Inject()
 
   private def isMatchValid(game: Match): Boolean = {
     MatchValidator.validate(game)
-  }
-
-  private def createErrorMessage(httpCode: String): String = {
-    ErrorMessageJsonSerializer.toJson(
-      new ErrorMessage(
-        httpCode,
-        getMessageByCode(httpCode)
-      )
-    )
-  }
-
-  private def getMessageByCode(httpCode: String): String = {
-    httpCode match {
-      case "400" =>
-        "Match data invalid"
-      case "403" =>
-        "Access forbidden"
-    }
   }
 }

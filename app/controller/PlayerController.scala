@@ -2,10 +2,10 @@ package controller
 
 import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
 import javax.inject._
-import model.{ErrorMessage, Player}
+import model.{Player, ResponseMessage}
 import play.api.libs.json.Json
 import play.api.mvc._
-import serializer.{ErrorMessageJsonSerializer, PlayerJsonSerializer}
+import serializer.PlayerJsonSerializer
 import service.PlayerService
 import validation.player.PlayerValidator
 
@@ -37,7 +37,7 @@ class PlayerController @Inject()
       .getPlayerById(playerId)
       .map {
         case None =>
-          NotFound(s"Player [id = $playerId] not found")
+          NotFound(ResponseMessage.createResponseMessageAsJson("404", s"Player [id = $playerId] not found"))
         case Some(player) =>
           Ok(Json.toJson(player))
       }
@@ -53,10 +53,14 @@ class PlayerController @Inject()
       playerService
         .savePlayer(player)
         .map(savedPlayer =>
-          Ok(s"Player [$savedPlayer] saved")
+          Ok(ResponseMessage.createResponseMessageAsJson("200", s"Player [$savedPlayer] saved"))
         )
     } else {
-      Future{BadRequest(createErrorMessage)}
+      Future{
+        BadRequest(
+          ResponseMessage.createResponseMessageAsJson("400","Player data invalid")
+        )
+      }
     }
   }
 
@@ -67,14 +71,5 @@ class PlayerController @Inject()
 
   private def isPlayerValid(player: Player): Boolean = {
     PlayerValidator.validate(player)
-  }
-
-  private def createErrorMessage: String = {
-    ErrorMessageJsonSerializer.toJson(
-      new ErrorMessage(
-        "400",
-        s"Player data invalid"
-      )
-    )
   }
 }
