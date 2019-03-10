@@ -1,6 +1,6 @@
 package controller
 
-import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
+import io.swagger.annotations._
 import javax.inject._
 import model.{Player, ResponseMessage}
 import play.api.libs.json.Json
@@ -17,8 +17,13 @@ class PlayerController @Inject()
   (playerService: PlayerService, cc: MessagesControllerComponents )
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  @ApiOperation(
+    value = "Get all players",
+    httpMethod = "GET",
+    response = classOf[Seq[Player]]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns all players list")
+    new ApiResponse(code = 200, message = "Returned list of all players")
   ))
   def getAllPlayers: Action[AnyContent] = Action.async { implicit request =>
     playerService
@@ -28,9 +33,14 @@ class PlayerController @Inject()
       )
   }
 
+  @ApiOperation(
+    value = "Get single player by id",
+    httpMethod = "GET",
+    response = classOf[Player]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns player by id"),
-    new ApiResponse(code = 404, message = "Returns information about missing player with given id")
+    new ApiResponse(code = 200, message = "Returned player by id"),
+    new ApiResponse(code = 404, message = "Missing player with given id")
   ))
   def getPlayerById(@ApiParam("The id used to search for the player") playerId: Long): Action[AnyContent] = Action.async { implicit request =>
     playerService
@@ -43,8 +53,14 @@ class PlayerController @Inject()
       }
   }
 
+  @ApiOperation(
+    value = "Save player received in request body",
+    httpMethod = "POST",
+    response = classOf[Player]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Saves given player. Player object is parsed from player request body (in JSON)")
+    new ApiResponse(code = 200, message = "Given player saved"),
+    new ApiResponse(code = 400, message = "Player validation failed")
   ))
   def savePlayer(): Action[AnyContent] = Action.async { implicit request =>
     val player = getPlayerFromRequest(request)
@@ -53,7 +69,7 @@ class PlayerController @Inject()
       playerService
         .savePlayer(player)
         .map(savedPlayer =>
-          Ok(ResponseMessage.createResponseMessageAsJson("200", s"Player [$savedPlayer] saved"))
+          Ok(PlayerJsonSerializer.toJson(savedPlayer))
         )
     } else {
       Future{

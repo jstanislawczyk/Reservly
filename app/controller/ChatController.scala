@@ -1,7 +1,7 @@
 package controller
 
 import akka.actor.ActorSystem
-import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
+import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import model.ResponseMessage
 import play.api.mvc._
@@ -10,9 +10,15 @@ import validation.chatMessage.ChatMessageValidatorValues
 
 @Api("ChatController")
 class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: ChatService) extends AbstractController(cc) {
-  
+
+  @ApiOperation(
+    value = "Broadcast given message to global chat",
+    httpMethod = "POST",
+    response = classOf[String]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Broadcast given message to global chat")
+    new ApiResponse(code = 200, message = "Message broadcast success"),
+    new ApiResponse(code = 400, message = "Message validation failed")
   ))
   def sendMessageToGlobalChat(): Action[AnyContent] = Action { implicit request =>
     val isMessageValid = chatService.handleGlobalChatMessageBroadcast(actorSystem, request)

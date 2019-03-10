@@ -1,10 +1,11 @@
 package controller
 
-import io.swagger.annotations.{Api, ApiParam, ApiResponse, ApiResponses}
+import io.swagger.annotations._
 import javax.inject.{Inject, Singleton}
-import model.{Match, ResponseMessage}
+import model.{Match, Player, ResponseMessage}
 import play.api.libs.json.Json
 import play.api.mvc._
+import play.libs.F.Tuple
 import security.Authorizer
 import serializer.MatchJsonSerializer
 import service.MatchService
@@ -18,8 +19,13 @@ class MatchController @Inject()
   (matchService: MatchService, authorizer: Authorizer, cc: MessagesControllerComponents)
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
+  @ApiOperation(
+    value = "Get all matches",
+    httpMethod = "GET",
+    response = classOf[Seq[Match]]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns all matches list")
+    new ApiResponse(code = 200, message = "Returned list of all matches")
   ))
   def getAllMatches: Action[AnyContent] = Action.async { implicit request =>
     matchService
@@ -29,8 +35,13 @@ class MatchController @Inject()
       }
   }
 
+  @ApiOperation(
+    value = "Get all matches with players",
+    httpMethod = "GET",
+    response = classOf[Seq[Tuple[Match, Player]]]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns all matches list with players")
+    new ApiResponse(code = 200, message = "Returned list of all matches with players")
   ))
   def getAllMatchesWithPlayers: Action[AnyContent] = Action.async { implicit request =>
     matchService
@@ -40,9 +51,14 @@ class MatchController @Inject()
       }
   }
 
+  @ApiOperation(
+    value = "Get match by id",
+    httpMethod = "GET",
+    response = classOf[Match]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns match by id"),
-    new ApiResponse(code = 404, message = "Returns information about missing match with given id")
+    new ApiResponse(code = 200, message = "Returned match by id"),
+    new ApiResponse(code = 404, message = "Missing match with given id")
   ))
   def getMatchById(@ApiParam("The id used to search for the match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
     matchService
@@ -55,9 +71,14 @@ class MatchController @Inject()
       }
   }
 
+  @ApiOperation(
+    value = "Get match by id with player",
+    httpMethod = "GET",
+    response = classOf[Tuple[Match, Player]]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Returns match by id with player"),
-    new ApiResponse(code = 404, message = "Returns information about missing match with given id")
+    new ApiResponse(code = 200, message = "Returned match by id with player"),
+    new ApiResponse(code = 404, message = "Missing match with given id")
   ))
   def getMatchByIdWithPlayer(@ApiParam("The id used to search for the match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
     matchService
@@ -70,8 +91,15 @@ class MatchController @Inject()
       }
   }
 
+  @ApiOperation(
+    value = "Save match with given player id",
+    httpMethod = "POST",
+    response = classOf[Match]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Saves given match. Match object is parsed from match request body (in JSON)")
+    new ApiResponse(code = 200, message = "Match saved successfully"),
+    new ApiResponse(code = 400, message = "Match validation failed"),
+    new ApiResponse(code = 403, message = "Access forbidden")
   ))
   def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
@@ -84,7 +112,7 @@ class MatchController @Inject()
           matchService
             .saveMatch(matchToSave, playerId)
             .map(savedMatch => {
-              Ok(s"Match [$savedMatch] saved")
+              Ok(MatchJsonSerializer.toJson(savedMatch))
             })
         case false =>
           Future {BadRequest(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
@@ -94,9 +122,15 @@ class MatchController @Inject()
     }
   }
 
+  @ApiOperation(
+    value = "Delete match by id",
+    httpMethod = "DELETE",
+    response = classOf[String]
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Deletes match by id"),
-    new ApiResponse(code = 404, message = "Returns information about missing match or wrong player with given match id")
+    new ApiResponse(code = 200, message = "Match deleted successfully"),
+    new ApiResponse(code = 403, message = "Access forbidden"),
+    new ApiResponse(code = 404, message = "Missing match or wrong player with given match id")
   ))
   def deleteMatchById(@ApiParam("The id used to delete match") matchId: Long): Action[AnyContent] = Action.async { implicit request =>
     val playerId = getPlayerAuthId(request)
@@ -112,7 +146,7 @@ class MatchController @Inject()
               Ok(ResponseMessage.createResponseMessageAsJson("200", s"Match [id = $matchId] deleted"))
           }
       case false =>
-        Future {BadRequest(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
+        Future {Forbidden(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
     }
   }
 

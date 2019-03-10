@@ -4,7 +4,7 @@ import actor.MatchListActor
 import actorRegister.MatchListActorRegister
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import io.swagger.annotations.{Api, ApiResponse, ApiResponses}
+import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{MessagesAbstractController, MessagesControllerComponents, _}
@@ -17,8 +17,12 @@ class MatchListSocket @Inject()
   (repository: MatchRepository, cc: MessagesControllerComponents, actorSystem: ActorSystem )
   (implicit ec: ExecutionContext, system: ActorSystem, mat: Materializer) extends MessagesAbstractController(cc) {
 
+  @ApiOperation(
+    value = "Open match list websocket connection",
+    httpMethod = "GET"
+  )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Opens websocket connection and returns last created matches in period of 60 seconds, or on match delete/save")
+    new ApiResponse(code = 200, message = "Opens websocket connection which returns last created matches in period of 60 seconds or on match delete/save")
   ))
   def getMatches: WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef { out => {
