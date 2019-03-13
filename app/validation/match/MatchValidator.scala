@@ -1,5 +1,7 @@
 package validation.`match`
 
+import java.sql.Timestamp
+
 import model.Match
 import validation.Validator
 
@@ -8,10 +10,25 @@ object MatchValidator extends Validator[Match] {
   override def validate(game: Match): Boolean = {
     var isValid = true
 
-    if(game.startDate.after(game.endDate)) {
+    if(isStartDateAfterEndDate(game.startDate, game.endDate)) {
+      isValid = false
+    }
+
+    if(isMatchDurationGreaterThanLimit(game.startDate, game.endDate)) {
       isValid = false
     }
 
     isValid
+  }
+
+  private def isStartDateAfterEndDate(startDate: Timestamp, endDate: Timestamp): Boolean = {
+    startDate.after(endDate)
+  }
+
+  private def isMatchDurationGreaterThanLimit(startDate: Timestamp, endDate: Timestamp): Boolean = {
+    val maximumMatchLimit = 1800000
+    val duration = endDate.getTime - startDate.getTime
+
+    maximumMatchLimit < duration
   }
 }
