@@ -111,11 +111,14 @@ class MatchController @Inject()
         case true =>
           matchService
             .saveMatch(matchToSave, playerId)
-            .map(savedMatch => {
-              Ok(MatchJsonSerializer.toJson(savedMatch))
-            })
+            .map {
+              case null =>
+                BadRequest(ResponseMessage.createResponseMessageAsJson("400", "Can't reserve more than one match"))
+              case savedMatch: Match =>
+                Ok(MatchJsonSerializer.toJson(savedMatch))
+            }
         case false =>
-          Future {BadRequest(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
+          Future {Forbidden(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
       }
     } else {
       Future {BadRequest(ResponseMessage.createResponseMessageAsJson("400","Match data invalid"))}
