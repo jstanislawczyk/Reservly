@@ -3,6 +3,7 @@ package repository
 
 import java.sql.Timestamp
 
+import helper.MatchStatus
 import javax.inject.{Inject, Singleton}
 import model.{Match, Player}
 import play.api.db.slick.DatabaseConfigProvider
@@ -21,10 +22,11 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   private class MatchesTable(tag: Tag) extends Table[Match](tag, "matches") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def matchStatus = column[String]("match_status")
     def startDate = column[Timestamp]("start_date")
     def endDate = column[Timestamp]("end_date")
     def playerId = column[Long]("player_id")
-    def * = (id, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
+    def * = (id, matchStatus, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
     def player = foreignKey("player", playerId, playersRepository.players)(_.id)
   }
 
@@ -62,16 +64,33 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     }
   }
 
-  def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = db.run {
-    (
-      matches.map(game =>
-        (game.startDate, game.endDate, game.playerId)
-      )
+  def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = {
 
-      returning matches.map(_.id)
-        into ((data, id) => Match(id, data._1, data._2, data._3))
-      
-    ) += (matchToSave.startDate, matchToSave.endDate, playerId)
+    val getReservedMatchesQuery =
+      matches
+        .filter(game => game.playerId === playerId)
+        .filter(game => game.matchStatus === MatchStatus.RESERVED.toString)
+        .result
+
+    db.run {
+      getReservedMatchesQuery
+    }.flatMap(reservedMatches => {
+      if(reservedMatches.isEmpty) {
+        db.run {
+          (
+            matches.map(game =>
+              (game.matchStatus, game.startDate, game.endDate, game.playerId)
+            )
+
+            returning matches.map(_.id)
+              into ((data, id) => Match(id, data._1, data._2, data._3, data._4))
+
+            ) += (MatchStatus.RESERVED.toString, matchToSave.startDate, matchToSave.endDate, playerId)
+        }
+      } else {
+        Future{ null }
+      }
+    })
   }
 
   def deletePlayerMatchById(matchId: Long, playerId: Long): Future[Int] = db.run {
