@@ -17,7 +17,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
 #### IntelliJ
 * Install JDK11
 * Install scala support for IntelliJ
-* Import project to IntelliJ
+* Import project to IntelliJ (as SBT project)
 * In IntelliJ: Edit Configurations -> Add New Configuration -> Play
 * Use default config (with http://localhost:9000)
 * Run project with created config
