@@ -13,7 +13,7 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
     playerRepository.getAllPlayers
   }
 
-  def getPlayerById(playerId: Long): Future[Option[Player]] = {
+  def getPlayerById(playerId: String): Future[Option[Player]] = {
     playerRepository.getPlayerById(playerId)
   }
 
@@ -21,7 +21,7 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
     playerRepository.savePlayer(player)
   }
 
-  def deletePlayerById(playerId: Long): Future[Int] = {
+  def deletePlayerById(playerId: String): Future[Int] = {
     playerRepository.deletePlayerById(playerId)
   }
 }

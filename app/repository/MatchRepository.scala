@@ -25,7 +25,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     def matchStatus = column[String]("match_status")
     def startDate = column[Timestamp]("start_date")
     def endDate = column[Timestamp]("end_date")
-    def playerId = column[Long]("player_id")
+    def playerId = column[String]("player_id")
     def * = (id, matchStatus, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
     def player = foreignKey("player", playerId, playersRepository.players)(_.id)
   }
@@ -41,7 +41,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     val getMatchTableWithPlayerTableQuery =
       matches
         .join(players)
-        .on(_.id === _.id)
+        .on(_.playerId === _.id)
 
     db.run {
       getMatchTableWithPlayerTableQuery.result
@@ -56,7 +56,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     val getMatchTableWithPlayerTableQuery =
       matches
         .join(players)
-        .on(_.id === _.id)
+        .on(_.playerId === _.id)
         .filter(game => game._1.id === matchId)
 
     db.run {
@@ -64,7 +64,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     }
   }
 
-  def saveMatch(matchToSave: Match, playerId: Long): Future[Match] = {
+  def saveMatch(matchToSave: Match, playerId: String): Future[Match] = {
 
     val getReservedMatchesQuery =
       matches
@@ -93,7 +93,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     })
   }
 
-  def deletePlayerMatchById(matchId: Long, playerId: Long): Future[Int] = db.run {
+  def deletePlayerMatchById(matchId: Long, playerId: String): Future[Int] = db.run {
     matches
       .filter(_.id === matchId)
       .filter(_.playerId === playerId)

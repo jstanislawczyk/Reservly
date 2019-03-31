@@ -153,8 +153,8 @@ class MatchController @Inject()
     }
   }
 
-  private def getPlayerAuthId(request: MessagesRequest[AnyContent]): Long = {
-    request.headers.get("Auth-Id").getOrElse("0").toLong
+  private def getPlayerAuthId(request: MessagesRequest[AnyContent]): String = {
+    request.headers.get("Auth-Id").getOrElse("0").toString
   }
 
   private def isMatchValid(game: Match): Boolean = {

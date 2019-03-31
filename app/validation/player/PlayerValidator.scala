@@ -9,18 +9,43 @@ object PlayerValidator extends Validator[Player] {
   private val maximumMessageSize = PlayerValidatorValues.maximumNameSize
 
   override def validate(player: Player): Boolean = {
-    var isValidate = true
-
-    if(isValueNotInRange(player.firstName.length, minimumMessageSize, maximumMessageSize)) {
-      isValidate = false
+    if(isStringNullOrWhiteSpace(player.id)) {
+      return false
     }
 
-    if(isValueNotInRange(player.lastName.length, minimumMessageSize, maximumMessageSize)) {
-      isValidate = false
+    if(isValueNotInRange(player.displayName.length, minimumMessageSize, maximumMessageSize)) {
+      return false
     }
 
-    isValidate
+    if(isValueNotInRange(player.email.length, minimumMessageSize, maximumMessageSize)) {
+      return false
+    }
+
+    if(isEmailNotValid(player.email)) {
+      return false
+    }
+
+    true
   }
 
   private def isValueNotInRange = (value: Int, min: Int, max: Int) => value < min || value > max
+
+  private def isStringNullOrWhiteSpace(value: String): Boolean = {
+
+    if (value == null) {
+      return true
+    }
+
+    value.foreach(char => {
+      if(Character.isWhitespace(char)) {
+        return true
+      }
+    })
+
+    false
+  }
+
+  private def isEmailNotValid(email: String): Boolean = {
+    """(\w+)@([\w\.]+)""".r.unapplySeq(email).isEmpty
+  }
 }
