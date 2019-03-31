@@ -92,7 +92,7 @@ class MatchController @Inject()
   }
 
   @ApiOperation(
-    value = "Save match with given player id",
+    value = "Save match with given player id. Request must contain 'Auth-Id' header with existing player id",
     httpMethod = "POST",
     response = classOf[Match]
   )
