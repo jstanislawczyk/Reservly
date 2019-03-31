@@ -8,6 +8,9 @@ object PlayerValidator extends Validator[Player] {
   private val minimumNameSize = PlayerValidatorValues.minimumNameSize
   private val maximumNameSize = PlayerValidatorValues.maximumNameSize
 
+  private val minimumUrlSize = PlayerValidatorValues.minimumUrlSize
+  private val maximumUrlSize = PlayerValidatorValues.maximumUrlSize
+
   override def validate(player: Player): Boolean = {
     if(isNotValidId(player.id)) {
       return false
@@ -17,7 +20,7 @@ object PlayerValidator extends Validator[Player] {
       return false
     }
 
-    if(isValueNotInRange(player.email.length, minimumNameSize, maximumNameSize)) {
+    if(isValueNotInRange(player.photoUrl.length, minimumUrlSize, maximumUrlSize)) {
       return false
     }
 
