@@ -68,8 +68,8 @@ class PlayerController @Inject()
     if(isPlayerValid(player)) {
       playerService
         .savePlayer(player)
-        .map(savedPlayer =>
-          Ok(PlayerJsonSerializer.toJson(savedPlayer))
+        .map(_ =>
+          Ok(PlayerJsonSerializer.toJson(player))
         )
     } else {
       Future{
