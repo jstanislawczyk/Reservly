@@ -42,7 +42,7 @@ class PlayerController @Inject()
     new ApiResponse(code = 200, message = "Returned player by id"),
     new ApiResponse(code = 404, message = "Missing player with given id")
   ))
-  def getPlayerById(@ApiParam("The id used to search for the player") playerId: Long): Action[AnyContent] = Action.async { implicit request =>
+  def getPlayerById(@ApiParam("The id used to search for the player") playerId: String): Action[AnyContent] = Action.async { implicit request =>
     playerService
       .getPlayerById(playerId)
       .map {
@@ -68,8 +68,8 @@ class PlayerController @Inject()
     if(isPlayerValid(player)) {
       playerService
         .savePlayer(player)
-        .map(savedPlayer =>
-          Ok(PlayerJsonSerializer.toJson(savedPlayer))
+        .map(_ =>
+          Ok(PlayerJsonSerializer.toJson(player))
         )
     } else {
       Future{

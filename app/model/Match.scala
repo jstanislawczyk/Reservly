@@ -9,7 +9,7 @@ case class Match(
   matchStatus: String,
   startDate: Timestamp,
   endDate: Timestamp,
-  playerId: Long
+  playerId: String
 )
 
 object Match {

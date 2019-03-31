@@ -16,10 +16,11 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   import profile.api._
 
   protected class PlayersTable(tag: Tag) extends Table[Player](tag, "players") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def firstName = column[String]("first_name")
-    def lastName = column[String]("last_name")
-    def * = (id, firstName, lastName) <> ((Player.apply _).tupled, Player.unapply)
+    def id = column[String]("id", O.PrimaryKey)
+    def displayName = column[String]("display_name")
+    def email = column[String]("email")
+    def photoUrl = column[String]("photo_url")
+    def * = (id, displayName, email, photoUrl) <> ((Player.apply _).tupled, Player.unapply)
   }
 
   val players = TableQuery[PlayersTable]
@@ -28,7 +29,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     players.result
   }
 
-  def getPlayerById(playerId: Long): Future[Option[Player]] = db.run {
+  def getPlayerById(playerId: String): Future[Option[Player]] = db.run {
     players
       .filter(_.id === playerId)
       .result
@@ -38,21 +39,21 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
   def savePlayer(player: Player): Future[Player] = db.run {
     (
       players.map(player =>
-        (player.firstName, player.lastName)
+        (player.id, player.displayName, player.email, player.photoUrl)
       )
 
       returning players.map(_.id)
-        into ((data, id) => Player(id, data._1, data._2))
-    ) += (player.firstName, player.lastName)
+        into ((data, id) => Player(id, data._1, data._2, data._3))
+    ) += (player.id, player.displayName, player.email, player.photoUrl)
   }
 
-  def deletePlayerById(playerId: Long): Future[Int] = db.run {
+  def deletePlayerById(playerId: String): Future[Int] = db.run {
     players
       .filter(_.id === playerId)
       .delete
   }
 
-  def checkIfPlayerExists(playerId : Long): Future[Boolean] = db.run {
+  def checkIfPlayerExists(playerId : String): Future[Boolean] = db.run {
     players
       .filter(_.id === playerId)
       .exists

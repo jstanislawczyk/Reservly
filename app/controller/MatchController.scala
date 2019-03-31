@@ -92,7 +92,7 @@ class MatchController @Inject()
   }
 
   @ApiOperation(
-    value = "Save match with given player id",
+    value = "Save match with given player id. Request must contain 'Auth-Id' header with existing player id",
     httpMethod = "POST",
     response = classOf[Match]
   )
@@ -153,8 +153,8 @@ class MatchController @Inject()
     }
   }
 
-  private def getPlayerAuthId(request: MessagesRequest[AnyContent]): Long = {
-    request.headers.get("Auth-Id").getOrElse("0").toLong
+  private def getPlayerAuthId(request: MessagesRequest[AnyContent]): String = {
+    request.headers.get("Auth-Id").getOrElse("0").toString
   }
 
   private def isMatchValid(game: Match): Boolean = {
