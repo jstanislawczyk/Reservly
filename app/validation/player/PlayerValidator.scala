@@ -5,19 +5,19 @@ import validation.Validator
 
 object PlayerValidator extends Validator[Player] {
 
-  private val minimumMessageSize = PlayerValidatorValues.minimumNameSize
-  private val maximumMessageSize = PlayerValidatorValues.maximumNameSize
+  private val minimumNameSize = PlayerValidatorValues.minimumNameSize
+  private val maximumNameSize = PlayerValidatorValues.maximumNameSize
 
   override def validate(player: Player): Boolean = {
-    if(isStringNullOrWhiteSpace(player.id)) {
+    if(isNotValidId(player.id)) {
       return false
     }
 
-    if(isValueNotInRange(player.displayName.length, minimumMessageSize, maximumMessageSize)) {
+    if(isValueNotInRange(player.displayName.length, minimumNameSize, maximumNameSize)) {
       return false
     }
 
-    if(isValueNotInRange(player.email.length, minimumMessageSize, maximumMessageSize)) {
+    if(isValueNotInRange(player.email.length, minimumNameSize, maximumNameSize)) {
       return false
     }
 
@@ -30,7 +30,7 @@ object PlayerValidator extends Validator[Player] {
 
   private def isValueNotInRange = (value: Int, min: Int, max: Int) => value < min || value > max
 
-  private def isStringNullOrWhiteSpace(value: String): Boolean = {
+  private def isNotValidId(value: String): Boolean = {
 
     if (value == null) {
       return true
