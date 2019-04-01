@@ -66,11 +66,20 @@ class PlayerController @Inject()
     val player = getPlayerFromRequest(request)
 
     if(isPlayerValid(player)) {
-      playerService
-        .savePlayer(player)
-        .map(_ =>
-          Ok(PlayerJsonSerializer.toJson(player))
-        )
+      playerService.checkIfPlayerExists(player.id).flatMap {
+        case false =>
+          playerService
+            .savePlayer(player)
+            .map(_ =>
+              Ok(PlayerJsonSerializer.toJson(player))
+            )
+        case true =>
+          Future {
+            BadRequest(
+              ResponseMessage.createResponseMessageAsJson("400", "Player already exists")
+            )
+          }
+      }
     } else {
       Future{
         BadRequest(
