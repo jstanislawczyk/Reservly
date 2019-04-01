@@ -24,4 +24,8 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
   def deletePlayerById(playerId: String): Future[Int] = {
     playerRepository.deletePlayerById(playerId)
   }
+
+  def checkIfPlayerExists(playerId: String): Future[Boolean] = {
+    playerRepository.checkIfPlayerExists(playerId)
+  }
 }
