@@ -51,6 +51,7 @@ Swagger docs available at `localhost:9000/docs/`
 ### ChatMessage
 ```javascript
 { 
+  "playerId": "11",             //[String]
   "message": "Some message"     //[String: size -> 3 to 100 letters]
 }
 ```
