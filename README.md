@@ -14,6 +14,15 @@ Reservly is a tool for reserving game match queue
 Frontend repository available [here](https://github.com/mtrybus2208/game-reservation-app) 
 
 ## How to run
+#### Database
+* Install [PostgreSQL](https://www.postgresql.org/download/)
+* Create database 
+  - Port: default
+  - Database name: reservly
+  - User: postgres
+  - Password: root
+* Database config can be changed in application.conf file
+  
 #### IntelliJ
 * Install JDK11 ([openJDK](https://adoptopenjdk.net))
 * Install scala support for IntelliJ
