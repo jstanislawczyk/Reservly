@@ -14,7 +14,7 @@ case class Match(
 
 object Match {
   implicit object timestampFormat extends Format[Timestamp] {
-    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ")
 
     def reads(json: JsValue): JsSuccess[Timestamp] = {
       val dateAsString = json.as[String]
