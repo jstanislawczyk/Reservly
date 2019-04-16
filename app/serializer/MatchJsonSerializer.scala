@@ -3,7 +3,7 @@ package serializer
 import com.google.gson.GsonBuilder
 import model.Match
 
-object MatchJsonSerializer {
+object MatchJsonSerializer extends JsonSerializer[Match] {
   private val gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mmZ")
       .create()

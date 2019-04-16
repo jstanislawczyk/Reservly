@@ -3,7 +3,7 @@ package serializer
 import com.google.gson.Gson
 import model.ResponseMessage
 
-object ErrorMessageJsonSerializer {
+object ErrorMessageJsonSerializer extends JsonSerializer[ResponseMessage] {
   private val gson = new Gson
 
   def toJson(errorMessage: ResponseMessage): String = {
