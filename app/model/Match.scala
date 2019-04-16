@@ -24,9 +24,7 @@ object Match {
       )
     }
 
-    def writes(time: Timestamp) = {
-      JsString(format.format(time))
-    }
+    def writes(time: Timestamp) = JsString(format.format(time))
   }
 
   implicit val personFormat: OFormat[Match] = Json.format[Match]
