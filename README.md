@@ -33,7 +33,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
 
 ## Swagger docs
 * Swagger docs available at `localhost:9000/docs/`
-* Secured endpoints need to contains `Auth-Id` header with existing user id
+* Secured endpoints requests need to contain `Auth-Id` header with existing user id
 
 ## Models
 
