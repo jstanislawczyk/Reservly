@@ -1,10 +1,12 @@
 package serializer
 
-import com.google.gson.Gson
+import com.google.gson.{Gson, GsonBuilder}
 import model.Match
 
 object MatchJsonSerializer {
-  private val gson = new Gson
+  private val gson = new GsonBuilder()
+      .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+      .create()
 
   def toJson(game: Match): String = {
     gson.toJson(game)

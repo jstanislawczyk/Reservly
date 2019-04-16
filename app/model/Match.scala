@@ -14,14 +14,19 @@ case class Match(
 
 object Match {
   implicit object timestampFormat extends Format[Timestamp] {
-    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
+    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
     def reads(json: JsValue): JsSuccess[Timestamp] = {
-      val str = json.as[String]
-      JsSuccess(new Timestamp(format.parse(str).getTime))
+      val dateAsString = json.as[String]
+
+      JsSuccess(
+        new Timestamp(format.parse(dateAsString).getTime)
+      )
     }
 
-    def writes(ts: Timestamp) = JsString(format.format(ts))
+    def writes(time: Timestamp) = {
+      JsString(format.format(time))
+    }
   }
 
   implicit val personFormat: OFormat[Match] = Json.format[Match]
