@@ -99,5 +99,18 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       .filter(_.playerId === playerId)
       .delete
   }
+
+  def countMatchesInGivenTimePeriod(startMatchDate: Timestamp, endMatchDate: Timestamp): Future[Int] = {
+    val countMatchesInGivenTimePeriod =
+      sql"""
+        SELECT COUNT(*) FROM matches
+        WHERE start_date BETWEEN $startMatchDate AND $endMatchDate
+        OR end_date BETWEEN $startMatchDate AND $endMatchDate
+      """
+
+    db.run {
+      countMatchesInGivenTimePeriod.as[Int].head
+    }
+  }
 }
 

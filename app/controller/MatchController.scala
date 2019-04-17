@@ -109,14 +109,19 @@ class MatchController @Inject()
     if(isMatchValid(matchToSave)) {
       authorizer.authorizePlayerAccess(playerId).flatMap {
         case true =>
-          matchService
-            .saveMatch(matchToSave, playerId)
-            .map {
-              case null =>
-                BadRequest(ResponseMessage.createResponseMessageAsJson("400", "Can't reserve more than one match"))
-              case savedMatch: Match =>
-                Ok(MatchJsonSerializer.toJson(savedMatch))
-            }
+          matchService.countMatchesInGivenTimePeriod(matchToSave.startDate, matchToSave.endDate).flatMap {
+            case 0 =>
+              matchService
+                .saveMatch(matchToSave, playerId)
+                .map {
+                  case null =>
+                    BadRequest(ResponseMessage.createResponseMessageAsJson("400", "Can't reserve more than one match"))
+                  case savedMatch: Match =>
+                    Ok(MatchJsonSerializer.toJson(savedMatch))
+                }
+            case _ =>
+              Future {BadRequest(ResponseMessage.createResponseMessageAsJson("400", "Can't reserve more than one match in the same time period"))}
+          }
         case false =>
           Future {Forbidden(ResponseMessage.createResponseMessageAsJson("403", "Access forbidden"))}
       }
