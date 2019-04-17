@@ -2,8 +2,6 @@ package repository
 
 
 import java.sql.Timestamp
-
-import helper.MatchStatus
 import javax.inject.{Inject, Singleton}
 import model.{Match, Player}
 import play.api.db.slick.DatabaseConfigProvider
@@ -22,11 +20,10 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
 
   private class MatchesTable(tag: Tag) extends Table[Match](tag, "matches") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def matchStatus = column[String]("match_status")
     def startDate = column[Timestamp]("start_date")
     def endDate = column[Timestamp]("end_date")
     def playerId = column[String]("player_id")
-    def * = (id, matchStatus, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
+    def * = (id, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
     def player = foreignKey("player", playerId, playersRepository.players)(_.id)
   }
 
@@ -79,13 +76,13 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
         db.run {
           (
             matches.map(game =>
-              (game.matchStatus, game.startDate, game.endDate, game.playerId)
+              (game.startDate, game.endDate, game.playerId)
             )
 
             returning matches.map(_.id)
-              into ((data, id) => Match(id, data._1, data._2, data._3, data._4))
+              into ((data, id) => Match(id, data._1, data._2, data._3))
 
-            ) += (MatchStatus.RESERVED.toString, matchToSave.startDate, matchToSave.endDate, playerId)
+            ) += (matchToSave.startDate, matchToSave.endDate, playerId)
         }
       } else {
         Future{ null }

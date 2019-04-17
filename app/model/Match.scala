@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 
 case class Match(
   id: Long,
-  matchStatus: String,
   startDate: Timestamp,
   endDate: Timestamp,
   playerId: String
