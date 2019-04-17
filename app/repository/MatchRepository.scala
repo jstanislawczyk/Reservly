@@ -2,7 +2,6 @@ package repository
 
 
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
 
 import helper.MatchStatus
 import javax.inject.{Inject, Singleton}
