@@ -2,6 +2,7 @@ package repository
 
 
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 import helper.MatchStatus
 import javax.inject.{Inject, Singleton}
@@ -67,15 +68,15 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
   def saveMatch(matchToSave: Match, playerId: String): Future[Match] = {
 
     val getReservedMatchesQuery =
-      matches
-        .filter(game => game.playerId === playerId)
-        .filter(game => game.matchStatus === MatchStatus.RESERVED.toString)
-        .result
+      sql"""
+        SELECT COUNT(*) FROM matches
+        WHERE end_date >= current_timestamp
+      """
 
     db.run {
-      getReservedMatchesQuery
+      getReservedMatchesQuery.as[Int].head
     }.flatMap(reservedMatches => {
-      if(reservedMatches.isEmpty) {
+      if(reservedMatches == 0) {
         db.run {
           (
             matches.map(game =>
