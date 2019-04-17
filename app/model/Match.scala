@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 
 case class Match(
   id: Long,
-  matchStatus: String,
   startDate: Timestamp,
   endDate: Timestamp,
   playerId: String
@@ -14,7 +13,7 @@ case class Match(
 
 object Match {
   implicit object timestampFormat extends Format[Timestamp] {
-    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ")
+    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
 
     def reads(json: JsValue): JsSuccess[Timestamp] = {
       val dateAsString = json.as[String]

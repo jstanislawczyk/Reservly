@@ -1,5 +1,7 @@
 package service
 
+import java.sql.Timestamp
+
 import actorRegister.MatchListActorRegister
 import akka.actor.ActorSystem
 import helper.UpdateType
@@ -48,6 +50,10 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
     }
 
     deleteMatchStatus
+  }
+
+  def countMatchesInGivenTimePeriod(startMatchDate: Timestamp, endMatchDate: Timestamp): Future[Int] = {
+    matchRepository.countMatchesInGivenTimePeriod(startMatchDate, endMatchDate)
   }
 
   private def broadcastMessageWithUpdateForMatchesList(typeOfUpdate: UpdateType, message: String, actorSystem: ActorSystem): Unit = {
