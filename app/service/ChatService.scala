@@ -22,7 +22,7 @@ class ChatService {
 
   private def broadcastMessage(actorSystem: ActorSystem, chatMessage: ChatMessage): Unit = {
     val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
-    val chatMessageAsJson = ChatMessageJsonSerializer.toJson(chatMessage)
+    val chatMessageAsJson = s"[GLOBAL_CHAT] ${ChatMessageJsonSerializer.toJson(chatMessage)}"
 
     globalChatActorRegister.broadcastMessage(chatMessageAsJson)
   }
