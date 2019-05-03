@@ -1,4 +1,4 @@
-name := """Queserver"""
+name := """Reservly"""
 
 version := "2.7.x"
 
