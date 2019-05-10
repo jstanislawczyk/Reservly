@@ -8,6 +8,7 @@ case class Match(
   id: Long,
   startDate: Timestamp,
   endDate: Timestamp,
+  gameName: String,
   playerId: String
 )
 
