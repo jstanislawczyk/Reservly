@@ -7,6 +7,11 @@ import validation.Validator
 
 object MatchValidator extends Validator[Match] {
 
+  private val minimumGameNameSize = MatchValidatorValues.minimumGameNameSize
+  private val maximumGameNameSize = MatchValidatorValues.maximumGameNameSize
+
+  private val maximumMatchLimitInMilliseconds = MatchValidatorValues.maximumMatchLimitInMilliseconds
+
   override def validate(game: Match): Boolean = {
     var isValid = true
 
@@ -18,6 +23,10 @@ object MatchValidator extends Validator[Match] {
       isValid = false
     }
 
+    if(isValueNotInRange(game.gameName.length, minimumGameNameSize, maximumGameNameSize)) {
+      isValid = false
+    }
+
     isValid
   }
 
@@ -26,9 +35,11 @@ object MatchValidator extends Validator[Match] {
   }
 
   private def isMatchDurationGreaterThanLimit(startDate: Timestamp, endDate: Timestamp): Boolean = {
-    val maximumMatchLimit = 1800000
+    val maximumMatchLimit = this.maximumMatchLimitInMilliseconds
     val duration = endDate.getTime - startDate.getTime
 
     maximumMatchLimit < duration
   }
+
+  private def isValueNotInRange = (value: Int, min: Int, max: Int) => value < min || value > max
 }

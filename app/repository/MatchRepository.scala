@@ -22,8 +22,9 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def startDate = column[Timestamp]("start_date")
     def endDate = column[Timestamp]("end_date")
+    def gameName = column[String]("game_name")
     def playerId = column[String]("player_id")
-    def * = (id, startDate, endDate, playerId) <> ((Match.apply _).tupled, Match.unapply)
+    def * = (id, startDate, endDate, gameName, playerId) <> ((Match.apply _).tupled, Match.unapply)
     def player = foreignKey("player", playerId, playersRepository.players)(_.id)
   }
 
@@ -76,13 +77,13 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
         db.run {
           (
             matches.map(game =>
-              (game.startDate, game.endDate, game.playerId)
+              (game.startDate, game.endDate, game.gameName, game.playerId)
             )
 
             returning matches.map(_.id)
-              into ((data, id) => Match(id, data._1, data._2, data._3))
+              into ((data, id) => Match(id, data._1, data._2, data._3, data._4))
 
-            ) += (matchToSave.startDate, matchToSave.endDate, playerId)
+            ) += (matchToSave.startDate, matchToSave.endDate, matchToSave.gameName, playerId)
         }
       } else {
         Future{ null }
