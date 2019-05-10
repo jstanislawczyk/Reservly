@@ -30,7 +30,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
 * Install scala support for IntelliJ
 * Import project to IntelliJ (as SBT project)
 * In IntelliJ: Edit Configurations -> Add New Configuration -> Play
-* Use default config (with http://localhost:9000)
+* Use default config (with http://localhost:80)
 * Run project with created config
 
 ## Swagger docs
@@ -56,6 +56,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
   "startDate": "2019-01-23T06:00",     //[java.sql.Timestamp: start date must be before end date]
   "endDate": "2019-01-23T06:15",       //[java.sql.Timestamp: end date must be after start date]
   "matchStatus": "RESERVED",           //[MatchStatus -> RESERVED, ENDED]
+  "gameName": "FIFA",                  //[String: size -> 2 to 70 letters]
   "playerID": "1"                      //[String: existing player id]
 }
 ```
