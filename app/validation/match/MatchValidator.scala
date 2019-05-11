@@ -23,11 +23,21 @@ object MatchValidator extends Validator[Match] {
       isValid = false
     }
 
+    if(isCreatedBeforeCurrentDate(game.startDate)) {
+      isValid = false
+    }
+
     if(isValueNotInRange(game.gameName.length, minimumGameNameSize, maximumGameNameSize)) {
       isValid = false
     }
 
     isValid
+  }
+
+  private def isCreatedBeforeCurrentDate(startDate: Timestamp): Boolean = {
+    val currentTime = new Timestamp(System.currentTimeMillis())
+
+    startDate.before(currentTime)
   }
 
   private def isStartDateAfterEndDate(startDate: Timestamp, endDate: Timestamp): Boolean = {
