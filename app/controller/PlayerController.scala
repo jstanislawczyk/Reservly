@@ -54,7 +54,7 @@ class PlayerController @Inject()
   }
 
   @ApiOperation(
-    value = "Save player received in request body",
+    value = "Save player received in request body or updates if ID already exists in database",
     httpMethod = "POST",
     response = classOf[Player]
   )
@@ -66,20 +66,11 @@ class PlayerController @Inject()
     val player = getPlayerFromRequest(request)
 
     if(isPlayerValid(player)) {
-      playerService.checkIfPlayerExists(player.id).flatMap {
-        case false =>
-          playerService
-            .savePlayer(player)
-            .map(_ =>
-              Ok(PlayerJsonSerializer.toJson(player))
-            )
-        case true =>
-          Future {
-            BadRequest(
-              ResponseMessage.createResponseMessageAsJson("400", "Player already exists")
-            )
-          }
-      }
+      playerService
+        .savePlayer(player)
+        .map(_ =>
+          Ok(PlayerJsonSerializer.toJson(player))
+        )
     } else {
       Future{
         BadRequest(
