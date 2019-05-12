@@ -17,7 +17,7 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
     playerRepository.getPlayerById(playerId)
   }
 
-  def savePlayer(player: Player): Future[Player] = {
+  def savePlayer(player: Player): Future[Int] = {
     playerRepository.savePlayer(player)
   }
 

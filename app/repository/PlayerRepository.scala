@@ -36,15 +36,8 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
       .headOption
   }
 
-  def savePlayer(player: Player): Future[Player] = db.run {
-    (
-      players.map(player =>
-        (player.id, player.displayName, player.email, player.photoUrl)
-      )
-
-      returning players.map(_.id)
-        into ((data, id) => Player(id, data._1, data._2, data._3))
-    ) += (player.id, player.displayName, player.email, player.photoUrl)
+  def savePlayer(player: Player): Future[Int] = db.run {
+    players.insertOrUpdate(player)
   }
 
   def deletePlayerById(playerId: String): Future[Int] = db.run {
