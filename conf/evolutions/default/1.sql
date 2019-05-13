@@ -17,6 +17,15 @@ create table matches (
   PRIMARY KEY(id)
 );
 
+create table direct_chat_messages (
+  id varchar not null,
+  message varchar(300) not null,
+  message_send_date timestamp not null,
+  first_chat_member_id varchar not null REFERENCES players(id),
+  second_chat_member_id varchar not null REFERENCES players(id),
+  PRIMARY KEY(id)
+);
+
 # --- !Downs
 
 drop table "players" if exists;
