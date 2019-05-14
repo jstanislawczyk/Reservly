@@ -49,6 +49,7 @@ object PlayerValidator extends Validator[Player] {
   }
 
   private def isEmailNotValid(email: String): Boolean = {
-    """(\w+)@([\w\.]+)""".r.unapplySeq(email).isEmpty
+    val emailRegex = """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"""
+    emailRegex.r.unapplySeq(email).isEmpty
   }
 }
