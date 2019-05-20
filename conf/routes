@@ -23,7 +23,7 @@ GET             /socket/matches                 websocket.MatchListSocket.getMat
 
 # Chat Websocket
 GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat
-GET             /socket/chat/direct/:id         websocket.DirectChatSocket.directChat(id: String)
+GET             /socket/chat/direct             websocket.DirectChatSocket.directChat(senderId: String ?="", receiverId: String ?="")
 
 
 # Chat Controller
