@@ -26,27 +26,12 @@ class DirectChatSocket @Inject()
   ))
   def directChat(senderId: String, receiverId: String): WebSocket = WebSocket.accept[String, String] { implicit request =>
 
-    val chatRoomId = buildDirectChatRoomId(senderId, receiverId)
+    val chatRoomId = directChatService.buildDirectChatRoomId(senderId, receiverId)
 
     ActorFlow.actorRef(out => {
       registerNewActor(actorSystem, chatRoomId, out.path.toString)
-      DirectChatActor.props(out, actorSystem)
+      DirectChatActor.props(out, actorSystem, senderId, directChatService)
     })
-  }
-
-  private def buildDirectChatRoomId(senderId: String, receiverId: String): String = {
-
-    /*
-      The direct chat room id is created using the identifiers of both participants in the conversation
-      in a such way that both ids are ordered in alphabetical order and then they are concatenated
-      E.g. some_id, scala_java.
-    */
-
-    if (senderId > receiverId) {
-      s"${senderId}_$receiverId"
-    } else {
-      s"${receiverId}_$senderId"
-    }
   }
 
   private def registerNewActor(actorSystem: ActorSystem, actorId: String, actorPath: String): Unit = {
