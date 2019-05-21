@@ -26,9 +26,11 @@ GET             /socket/chat/global             websocket.GlobalChatSocket.globa
 GET             /socket/chat/direct             websocket.DirectChatSocket.directChat(senderId: String ?="", receiverId: String ?="")
 
 
-# Chat Controller
+# Global Chat Controller
 POST            /chat/global                    controller.GlobalChatController.sendMessageToGlobalChat()
 
+# Direct Chat Controller
+POST            /chat/direct                    controller.DirectChatController.sendDirectMessage(senderId: String ?="", receiverId: String ?="")
 
 # Swagger routes
 GET             /assets/*file                   controllers.Assets.at(path="/public", file)
