@@ -8,7 +8,7 @@ import play.api.mvc._
 import service.GlobalChatService
 import validation.chatMessage.ChatMessageValidatorValues
 
-@Api("ChatController")
+@Api("GlobalChatController")
 class GlobalChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: GlobalChatService) extends AbstractController(cc) {
 
   @ApiOperation(
