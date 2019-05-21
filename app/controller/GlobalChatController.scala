@@ -6,9 +6,9 @@ import javax.inject.Inject
 import model.ResponseMessage
 import play.api.mvc._
 import service.GlobalChatService
-import validation.chatMessage.ChatMessageValidatorValues
+import validation.chatMessage.GlobalChatMessageValidatorValues
 
-@Api("GlobalChatController")
+@Api("ChatController")
 class GlobalChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: GlobalChatService) extends AbstractController(cc) {
 
   @ApiOperation(
@@ -31,7 +31,7 @@ class GlobalChatController @Inject()(cc: ControllerComponents, actorSystem: Acto
   }
 
   private def createErrorMessage: String = {
-    val values = ChatMessageValidatorValues
+    val values = GlobalChatMessageValidatorValues
 
     ResponseMessage.createResponseMessageAsJson(
       "400",
