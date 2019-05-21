@@ -3,10 +3,10 @@ package validation.chatMessage
 import model.GlobalChatMessage
 import validation.Validator
 
-object ChatMessageValidator extends Validator[GlobalChatMessage] {
+object GlobalChatMessageValidator extends Validator[GlobalChatMessage] {
 
-  private val minimumMessageSize = ChatMessageValidatorValues.minimumMessageSize
-  private val maximumMessageSize = ChatMessageValidatorValues.maximumMessageSize
+  private val minimumMessageSize = GlobalChatMessageValidatorValues.minimumMessageSize
+  private val maximumMessageSize = GlobalChatMessageValidatorValues.maximumMessageSize
 
   override def validate(chatMessage: GlobalChatMessage): Boolean = {
     var isValidate = true
