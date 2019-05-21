@@ -9,7 +9,7 @@ case class ResponseMessage(
 )
 
 object ResponseMessage {
-  implicit val errorFormat: OFormat[ChatMessage] = Json.format[ChatMessage]
+  implicit val errorFormat: OFormat[GlobalChatMessage] = Json.format[GlobalChatMessage]
 
   def createResponseMessageAsJson(httpCode: String, responseMessage: String): String = {
     ErrorMessageJsonSerializer.toJson(

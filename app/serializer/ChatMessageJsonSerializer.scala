@@ -1,16 +1,16 @@
 package serializer
 
 import com.google.gson.Gson
-import model.ChatMessage
+import model.GlobalChatMessage
 
-object ChatMessageJsonSerializer extends JsonSerializer[ChatMessage] {
+object ChatMessageJsonSerializer extends JsonSerializer[GlobalChatMessage] {
   private val gson = new Gson
 
-  def toJson(chatMessage: ChatMessage): String = {
+  def toJson(chatMessage: GlobalChatMessage): String = {
     gson.toJson(chatMessage)
   }
 
-  def fromJson(chatMessageJson: String): ChatMessage = {
-    gson.fromJson(chatMessageJson, classOf[ChatMessage])
+  def fromJson(chatMessageJson: String): GlobalChatMessage = {
+    gson.fromJson(chatMessageJson, classOf[GlobalChatMessage])
   }
 }

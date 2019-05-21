@@ -5,11 +5,11 @@ import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import model.ResponseMessage
 import play.api.mvc._
-import service.ChatService
+import service.GlobalChatService
 import validation.chatMessage.ChatMessageValidatorValues
 
 @Api("ChatController")
-class ChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: ChatService) extends AbstractController(cc) {
+class GlobalChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, chatService: GlobalChatService) extends AbstractController(cc) {
 
   @ApiOperation(
     value = "Broadcast given message to global chat",
