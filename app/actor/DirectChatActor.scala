@@ -4,21 +4,21 @@ import actorRegister.DirectChatActorRegister
 import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
 import service.DirectChatService
 
-object DirectChatActor {
-  def props(out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService) = Props(new DirectChatActor(out, actorSystem, userId, directChatService))
+import scala.concurrent.ExecutionContext
 
-  var userId: String = _
+object DirectChatActor {
+  def props(out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService)(implicit ec: ExecutionContext)
+      = Props(new DirectChatActor(out, actorSystem, userId, directChatService))
 }
 
-class DirectChatActor (out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService) extends Actor {
+class DirectChatActor (out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService)(implicit ec: ExecutionContext) extends Actor {
+
   def receive: PartialFunction[Any, Unit] = {
     case _: Unit => ()
   }
 
   override def preStart(): Unit = {
-    if(directChatService.isGivenPlayerInvalid(userId)) {
-      self ! PoisonPill
-    }
+    self ! PoisonPill
   }
 
   override def postStop(): Unit = {
