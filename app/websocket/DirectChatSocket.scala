@@ -24,18 +24,16 @@ class DirectChatSocket @Inject()
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Opens direct chat websocket connection for given receiver id and sender id")
   ))
-  def directChat(senderId: String, receiverId: String): WebSocket = WebSocket.accept[String, String] { implicit request =>
-
-    val chatRoomId = directChatService.buildDirectChatRoomId(senderId, receiverId)
+  def directChat(userId: String): WebSocket = WebSocket.accept[String, String] { implicit request =>
 
     ActorFlow.actorRef(out => {
-      registerNewActor(actorSystem, chatRoomId, out.path.toString)
-      DirectChatActor.props(out, actorSystem, senderId, directChatService)
+      registerNewActor(actorSystem, userId, out.path.toString)
+      DirectChatActor.props(out, actorSystem, userId, directChatService)
     })
   }
 
-  private def registerNewActor(actorSystem: ActorSystem, actorId: String, actorPath: String): Unit = {
+  private def registerNewActor(actorSystem: ActorSystem, userId: String, actorPath: String): Unit = {
     val directChatActorRegister = new DirectChatActorRegister(actorSystem)
-    directChatActorRegister.registerNewActor(actorId, actorPath)
+    directChatActorRegister.registerNewActor(userId, actorPath)
   }
 }
