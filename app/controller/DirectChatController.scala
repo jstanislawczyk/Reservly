@@ -5,6 +5,7 @@ import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import model.ResponseMessage
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import serializer.DirectChatMessageJsonSerializer
 import service.DirectChatService
 import validation.chatMessage.GlobalChatMessageValidatorValues
 
@@ -20,15 +21,16 @@ class DirectChatController @Inject()(cc: ControllerComponents, actorSystem: Acto
     new ApiResponse(code = 200, message = "Message broadcast success"),
     new ApiResponse(code = 400, message = "Message validation failed")
   ))
-  def sendDirectMessage(senderId: String, receiverId: String): Action[AnyContent] = Action { implicit request =>
+  def sendDirectMessage(): Action[AnyContent] = Action { implicit request =>
 
-    val chatMembersIds = (senderId, receiverId)
+    val directChatMessage = DirectChatMessageJsonSerializer.fromJson(request.body.asJson.get.toString())
+    val chatMembersIds = (directChatMessage.senderId, directChatMessage.receiverId)
 
     if(directChatService.areGivenPlayersInvalid(chatMembersIds)) {
       NotFound(createNotFoundErrorMessage)
     }
 
-    val isMessageValid = directChatService.sendDirectMessage(actorSystem, request, chatMembersIds)
+    val isMessageValid = directChatService.sendDirectMessage(actorSystem, directChatMessage, directChatMessage.receiverId)
 
     if (isMessageValid) {
       Ok("")
