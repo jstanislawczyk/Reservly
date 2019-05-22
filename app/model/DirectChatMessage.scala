@@ -7,8 +7,8 @@ import play.api.libs.json.{Format, JsString, JsSuccess, JsValue, Json, OFormat}
 
 case class DirectChatMessage (
   chatId: String,
-  firstChatMemberId: String,
-  secondChatMemberId: String,
+  senderId: String,
+  receiverId: String,
   message: String,
   messageSendDate: Timestamp
 )

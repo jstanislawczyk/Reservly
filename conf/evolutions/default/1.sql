@@ -21,8 +21,8 @@ create table direct_chat_messages (
   id varchar not null,
   message varchar(300) not null,
   message_send_date timestamp not null,
-  first_chat_member_id varchar not null REFERENCES players(id),
-  second_chat_member_id varchar not null REFERENCES players(id),
+  sender_id varchar not null REFERENCES players(id),
+  receiver_id varchar not null REFERENCES players(id),
   PRIMARY KEY(id)
 );
 

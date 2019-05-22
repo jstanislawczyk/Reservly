@@ -20,13 +20,13 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
 
   private class DirectChatMessagesTable(tag: Tag) extends Table[DirectChatMessage](tag, "direct_chat_messages") {
     def id = column[String]("id", O.PrimaryKey)
-    def firstChatMemberId = column[String]("first_chat_member_id")
-    def secondChatMemberId = column[String]("second_chat_member_id")
+    def senderId = column[String]("sender_id")
+    def receiverId = column[String]("receiver_id")
     def message = column[String]("message")
     def messageSendDate = column[Timestamp]("message_send_date")
-    def * = (id, firstChatMemberId, secondChatMemberId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
-    def firstChatMember = foreignKey("player", firstChatMemberId, playersRepository.players)(_.id)
-    def secondChatMember = foreignKey("player", secondChatMemberId, playersRepository.players)(_.id)
+    def * = (id, senderId, receiverId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
+    def firstChatMember = foreignKey("player", senderId, playersRepository.players)(_.id)
+    def secondChatMember = foreignKey("player", receiverId, playersRepository.players)(_.id)
   }
 
   private val directChatMessages = TableQuery[DirectChatMessagesTable]
