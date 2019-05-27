@@ -57,7 +57,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
   "endDate": "2019-01-23T06:15",       //[java.sql.Timestamp: end date must be after start date]
   "matchStatus": "RESERVED",           //[MatchStatus -> RESERVED, ENDED]
   "gameName": "FIFA",                  //[String: size -> 2 to 70 letters]
-  "playerID": "1"                      //[String: existing player id]
+  "playerId": "1"                      //[String: existing player id]
 }
 ```
 
