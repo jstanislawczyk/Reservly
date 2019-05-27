@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat
 import play.api.libs.json._
 
 case class DirectChatMessage (
-  chatId: String,
-  senderId: String,
+  id: Long,
   receiverId: String,
+  senderId: String,
   message: String,
   var messageSendDate: Timestamp
 )
