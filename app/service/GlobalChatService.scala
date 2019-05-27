@@ -1,6 +1,6 @@
 package service
 
-import actorRegister.GlobalChatActorRegister
+import actor_register.GlobalChatActorRegister
 import akka.actor.ActorSystem
 import model.GlobalChatMessage
 import play.api.mvc.{AnyContent, Request}

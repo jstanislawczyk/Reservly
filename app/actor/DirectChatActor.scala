@@ -1,6 +1,6 @@
 package actor
 
-import actorRegister.DirectChatActorRegister
+import actor_register.DirectChatActorRegister
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import service.DirectChatService
 

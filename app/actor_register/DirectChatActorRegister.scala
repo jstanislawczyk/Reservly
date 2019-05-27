@@ -1,6 +1,6 @@
-package actorRegister
+package actor_register
 
-import actorRegister.DirectChatActorRegister.actorRegister
+import actor_register.DirectChatActorRegister.actorRegister
 import akka.actor.ActorSystem
 
 object DirectChatActorRegister {

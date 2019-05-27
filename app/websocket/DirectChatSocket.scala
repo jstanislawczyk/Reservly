@@ -1,7 +1,7 @@
 package websocket
 
 import actor.DirectChatActor
-import actorRegister.DirectChatActorRegister
+import actor_register.DirectChatActorRegister
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}

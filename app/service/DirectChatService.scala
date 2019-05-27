@@ -2,7 +2,7 @@ package service
 
 import java.sql.Timestamp
 
-import actorRegister.DirectChatActorRegister
+import actor_register.DirectChatActorRegister
 import akka.actor.ActorSystem
 import javax.inject.Inject
 import model.DirectChatMessage
