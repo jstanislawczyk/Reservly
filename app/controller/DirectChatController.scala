@@ -13,12 +13,12 @@ import validation.chat_message.GlobalChatMessageValidatorValues
 class DirectChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, directChatService: DirectChatService) extends AbstractController(cc)  {
 
   @ApiOperation(
-    value = "Broadcast given message to global chat",
+    value = "Send direct message",
     httpMethod = "POST",
     response = classOf[String]
   )
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Message broadcast success"),
+    new ApiResponse(code = 200, message = "Message sent successfully"),
     new ApiResponse(code = 400, message = "Message validation failed")
   ))
   def sendDirectMessage(): Action[AnyContent] = Action { implicit request =>
@@ -30,9 +30,9 @@ class DirectChatController @Inject()(cc: ControllerComponents, actorSystem: Acto
       NotFound(createNotFoundErrorMessage)
     }
 
-    val isMessageValid = directChatService.sendDirectMessage(actorSystem, directChatMessage, directChatMessage.receiverId)
+    val messageSentSuccessfully = directChatService.sendDirectMessage(actorSystem, directChatMessage, directChatMessage.receiverId)
 
-    if (isMessageValid) {
+    if (messageSentSuccessfully) {
       Ok("")
     } else {
       BadRequest(createBadRequestErrorMessage)
