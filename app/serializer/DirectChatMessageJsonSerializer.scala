@@ -1,19 +1,19 @@
 package serializer
 
-import com.google.gson.GsonBuilder
+import com.google.gson.{Gson, GsonBuilder}
 import model.DirectChatMessage
 
 object DirectChatMessageJsonSerializer extends JsonSerializer[DirectChatMessage] {
 
-  private val gson = new GsonBuilder()
+  override protected val gson: Gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
       .create()
 
-  def toJson(chatMessage: DirectChatMessage): String = {
+  override def toJson(chatMessage: DirectChatMessage): String = {
     gson.toJson(chatMessage)
   }
 
-  def fromJson(chatMessageJson: String): DirectChatMessage = {
+  override def fromJson(chatMessageJson: String): DirectChatMessage = {
     gson.fromJson(chatMessageJson, classOf[DirectChatMessage])
   }
 }
