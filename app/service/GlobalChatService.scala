@@ -5,7 +5,7 @@ import akka.actor.ActorSystem
 import model.GlobalChatMessage
 import play.api.mvc.{AnyContent, Request}
 import serializer.ChatMessageJsonSerializer
-import validation.chatMessage.GlobalChatMessageValidator
+import validation.chat_message.GlobalChatMessageValidator
 
 class GlobalChatService {
 

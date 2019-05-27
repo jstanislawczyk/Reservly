@@ -1,4 +1,4 @@
-package validation.chatMessage
+package validation.chat_message
 
 object GlobalChatMessageValidatorValues {
   val minimumMessageSize = 3

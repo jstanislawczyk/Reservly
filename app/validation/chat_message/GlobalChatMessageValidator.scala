@@ -1,4 +1,4 @@
-package validation.chatMessage
+package validation.chat_message
 
 import model.GlobalChatMessage
 import validation.Validator

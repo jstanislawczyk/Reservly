@@ -7,7 +7,7 @@ import model.ResponseMessage
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import serializer.DirectChatMessageJsonSerializer
 import service.DirectChatService
-import validation.chatMessage.GlobalChatMessageValidatorValues
+import validation.chat_message.GlobalChatMessageValidatorValues
 
 @Api("DirectChatController")
 class DirectChatController @Inject()(cc: ControllerComponents, actorSystem: ActorSystem, directChatService: DirectChatService) extends AbstractController(cc)  {
