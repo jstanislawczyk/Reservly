@@ -10,7 +10,7 @@ case class DirectChatMessage (
   senderId: String,
   receiverId: String,
   message: String,
-  messageSendDate: Timestamp
+  var messageSendDate: Timestamp
 )
 
 object DirectChatMessage {

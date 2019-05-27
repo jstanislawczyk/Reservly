@@ -1,5 +1,7 @@
 package service
 
+import java.sql.Timestamp
+
 import actorRegister.DirectChatActorRegister
 import akka.actor.ActorSystem
 import javax.inject.Inject
@@ -16,6 +18,7 @@ class DirectChatService @Inject() (playerRepository: PlayerRepository, actorSyst
     val isMessageValid = DirectChatMessageValidator.validate(chatMessage)
 
     if(isMessageValid) {
+      chatMessage.messageSendDate = new Timestamp(System.currentTimeMillis())
       sendMessage(actorSystem, chatMessage, directChatReceiverId)
     }
 
