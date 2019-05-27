@@ -34,7 +34,7 @@ class DirectChatService @Inject() (playerRepository: PlayerRepository, actorSyst
   }
 
   def buildResponseJson(directChatMessageObjectAsJson: String): String = {
-    s"{type: \042DirectChat\042, object: $directChatMessageObjectAsJson}"
+    s"{\042type\042: \042DirectChat\042, \042object\042: $directChatMessageObjectAsJson}"
   }
 
   private def sendMessage(actorSystem: ActorSystem, chatMessage: DirectChatMessage, directChatReceiverId: String): Unit = {
