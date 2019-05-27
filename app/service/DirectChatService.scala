@@ -4,6 +4,7 @@ import java.sql.Timestamp
 
 import actor_register.DirectChatActorRegister
 import akka.actor.ActorSystem
+import helper.{WebSocketResponseBuilder, WebSocketResponseType}
 import javax.inject.Inject
 import model.DirectChatMessage
 import repository.PlayerRepository
@@ -34,7 +35,9 @@ class DirectChatService @Inject() (playerRepository: PlayerRepository, actorSyst
   }
 
   def buildResponseJson(directChatMessageObjectAsJson: String): String = {
-    s"{\042type\042: \042DirectChat\042, \042object\042: $directChatMessageObjectAsJson}"
+    val responseType = WebSocketResponseType.DIRECT_CHAT
+
+    WebSocketResponseBuilder.buildWebsocketResponse(responseType, directChatMessageObjectAsJson)
   }
 
   private def sendMessage(actorSystem: ActorSystem, chatMessage: DirectChatMessage, directChatReceiverId: String): Unit = {
