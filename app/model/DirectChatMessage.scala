@@ -3,7 +3,7 @@ package model
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
-import play.api.libs.json.{Format, JsString, JsSuccess, JsValue, Json, OFormat}
+import play.api.libs.json._
 
 case class DirectChatMessage (
   chatId: String,
