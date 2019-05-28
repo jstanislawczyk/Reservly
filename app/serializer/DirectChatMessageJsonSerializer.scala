@@ -5,7 +5,7 @@ import model.DirectChatMessage
 
 object DirectChatMessageJsonSerializer extends JsonSerializer[DirectChatMessage] {
 
-  override protected val gson: Gson = new GsonBuilder()
+  protected val gson: Gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
       .create()
 

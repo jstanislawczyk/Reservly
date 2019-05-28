@@ -5,7 +5,7 @@ import model.Match
 
 object MatchJsonSerializer extends JsonSerializer[Match] {
 
-  override protected val gson: Gson = new GsonBuilder()
+  val gson: Gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm")
       .create()
 
