@@ -32,17 +32,9 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
   private val directChatMessages = TableQuery[DirectChatMessagesTable]
   private val players = playersRepository.players
 
-  def saveDirectChatMessage(directChatMessageToSave: DirectChatMessage): Future[DirectChatMessage] = {
+  def saveMessage(directChatMessageToSave: DirectChatMessage): Future[Int] = {
     db.run {
-      (
-        directChatMessages.map(chatMessage =>
-          (chatMessage.receiverId, chatMessage.senderId, chatMessage.message, chatMessage.messageSendDate)
-        )
-
-          returning directChatMessages.map(_.id)
-          into ((data, id) => DirectChatMessage(id, data._1, data._2, data._3, data._4))
-
-        ) += (directChatMessageToSave.receiverId, directChatMessageToSave.senderId, directChatMessageToSave.message, directChatMessageToSave.messageSendDate)
+      directChatMessages += directChatMessageToSave
     }
   }
 }
