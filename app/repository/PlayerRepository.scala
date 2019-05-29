@@ -52,4 +52,22 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
       .exists
       .result
   }
+
+  def checkIfPlayersPairExist(playersIds: (String, String)): Future[Boolean] = {
+    val countPlayersWithGivenIds =
+      sql"""
+        SELECT COUNT(*) FROM players
+        WHERE id = ${playersIds._1} OR id = ${playersIds._2}
+      """
+
+    db.run {
+      countPlayersWithGivenIds.as[Int].head
+    }.flatMap(numberOfPlayers => {
+      if(numberOfPlayers == 2) {
+        Future{true}
+      } else {
+        Future{false}
+      }
+    })
+  }
 }
