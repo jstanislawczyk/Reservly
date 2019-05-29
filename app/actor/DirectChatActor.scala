@@ -1,7 +1,7 @@
 package actor
 
 import actor_register.DirectChatActorRegister
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
 import service.DirectChatService
 
 import scala.concurrent.ExecutionContext
@@ -18,10 +18,13 @@ class DirectChatActor (out: ActorRef, actorSystem: ActorSystem, userId: String, 
   }
 
   override def preStart(): Unit = {
-    /*
-    TODO implement auto close when receiver doesn't exist
-    self ! PoisonPill
-    */
+    directChatService
+      .isGivenPlayerValid(userId)
+      .foreach(isValid => {
+        if(!isValid) {
+          self ! PoisonPill
+        }
+      })
   }
 
   override def postStop(): Unit = {
