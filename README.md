@@ -77,7 +77,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
   "receiverId": "id2",           //[String: existing player id]
   "senderId": "id2",             //[String: existing player id]
   "message": "Test test,                           //[String: size -> 3 to 300 letters]
-  "messageSendDate": "2019-01-23T06:15:13"         //[java.sql.Timestamp]
+  "messageSendDate": "2019-01-23T06:00:00"         //[java.sql.Timestamp]
 }
 ```
 
