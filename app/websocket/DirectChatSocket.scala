@@ -8,13 +8,13 @@ import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
-import service.DirectChatService
+import service.PlayerService
 
 import scala.concurrent.ExecutionContext
 
 @Api("DirectChatSocket")
 class DirectChatSocket @Inject()
-(cc: MessagesControllerComponents, directChatService: DirectChatService)
+(cc: MessagesControllerComponents, playerService: PlayerService)
 (implicit ec: ExecutionContext, actorSystem: ActorSystem, mat: Materializer) extends MessagesAbstractController(cc) {
 
   @ApiOperation(
@@ -28,7 +28,7 @@ class DirectChatSocket @Inject()
 
     ActorFlow.actorRef(out => {
       registerNewActor(actorSystem, userId, out.path.toString)
-      DirectChatActor.props(out, actorSystem, userId, directChatService)
+      DirectChatActor.props(out, actorSystem, userId, playerService)
     })
   }
 
