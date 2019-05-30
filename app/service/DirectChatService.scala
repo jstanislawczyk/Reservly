@@ -22,12 +22,8 @@ class DirectChatService @Inject()
     sendMessage(actorSystem, chatMessage)
   }
 
-  def isGivenPlayerValid(userId: String): Future[Boolean] = {
-    playerRepository.checkIfPlayerExists(userId)
-  }
-
-  def areGivenPlayersInvalid(chatMembersIds: (String, String)): Future[Boolean] = {
-    playerRepository.checkIfPlayersPairExist(chatMembersIds)
+  def getMessagesForGivenReceiverAndSender(receiverId: String, senderId: String): Future[Seq[DirectChatMessage]] = {
+    directChatMessageRepository.getMessagesForGivenReceiverAndSender(receiverId, senderId)
   }
 
   def buildResponseJson(directChatMessageObjectAsJson: String): String = {

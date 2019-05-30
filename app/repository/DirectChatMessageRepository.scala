@@ -19,12 +19,12 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
   import profile.api._
 
   private class DirectChatMessagesTable(tag: Tag) extends Table[DirectChatMessage](tag, "direct_chat_messages") {
-    def id = column[Long]("id", O.PrimaryKey)
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def receiverId = column[String]("receiver_id")
     def senderId = column[String]("sender_id")
     def message = column[String]("message")
     def messageSendDate = column[Timestamp]("message_send_date")
-    def * = (id, senderId, receiverId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
+    def * = (id, receiverId, senderId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
     def receiver = foreignKey("player", receiverId, playersRepository.players)(_.id)
     def sender = foreignKey("player", senderId, playersRepository.players)(_.id)
   }
@@ -33,8 +33,18 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
   private val players = playersRepository.players
 
   def saveMessage(directChatMessageToSave: DirectChatMessage): Future[Int] = {
+
     db.run {
       directChatMessages += directChatMessageToSave
+    }
+  }
+
+  def getMessagesForGivenReceiverAndSender(receiverId: String, senderId: String): Future[Seq[DirectChatMessage]] = {
+    db.run {
+      directChatMessages
+        .filter(_.receiverId === receiverId)
+        .filter(_.senderId === senderId)
+        .result
     }
   }
 }

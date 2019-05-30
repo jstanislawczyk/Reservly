@@ -3,10 +3,11 @@ package controller
 import akka.actor.ActorSystem
 import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
 import javax.inject.Inject
-import model.ResponseMessage
+import model.{DirectChatMessage, ResponseMessage}
+import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
 import serializer.DirectChatMessageJsonSerializer
-import service.DirectChatService
+import service.{DirectChatService, PlayerService}
 import validation.chat_message.GlobalChatMessageValidatorValues
 import validation.direct_chat_message.DirectChatMessageValidator
 
@@ -14,7 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Api("DirectChatController")
 class DirectChatController @Inject()
-  (cc: ControllerComponents, actorSystem: ActorSystem, directChatService: DirectChatService)
+  (cc: ControllerComponents, actorSystem: ActorSystem, directChatService: DirectChatService, playerService: PlayerService)
   (implicit ec: ExecutionContext) extends AbstractController(cc)  {
 
   @ApiOperation(
@@ -36,8 +37,8 @@ class DirectChatController @Inject()
     if(isMessageNotValid) {
       Future{BadRequest(createValidationFailErrorMessage)}
     } else {
-      directChatService
-        .areGivenPlayersInvalid(chatMembersIds)
+      playerService
+        .checkIfPlayersPairExist(chatMembersIds)
         .flatMap {
           case false =>
             Future{NotFound(createNotFoundErrorMessage)}
@@ -46,6 +47,22 @@ class DirectChatController @Inject()
             Future{Ok("")}
         }
     }
+  }
+
+  @ApiOperation(
+    value = "Get messages for given receiver id and sender id",
+    httpMethod = "GET",
+    response = classOf[Seq[DirectChatMessage]]
+  )
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Messages list received"),
+  ))
+  def getMessagesForGivenReceiverAndSenderId(receiverId: String, senderId: String): Action[AnyContent] = Action.async { implicit request =>
+    directChatService
+      .getMessagesForGivenReceiverAndSender(receiverId, senderId)
+      .map(messages => {
+        Ok(Json.toJson(messages))
+      })
   }
 
   private def createNotFoundErrorMessage: String = {
