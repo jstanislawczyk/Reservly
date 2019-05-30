@@ -2,26 +2,26 @@ package actor
 
 import actor_register.DirectChatActorRegister
 import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
-import service.DirectChatService
+import service.PlayerService
 
 import scala.concurrent.ExecutionContext
 
 object DirectChatActor {
-  def props(out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService)(implicit ec: ExecutionContext)
-      = Props(new DirectChatActor(out, actorSystem, userId, directChatService))
+  def props(out: ActorRef, actorSystem: ActorSystem, userId: String, playerService: PlayerService)(implicit ec: ExecutionContext)
+      = Props(new DirectChatActor(out, actorSystem, userId, playerService))
 }
 
-class DirectChatActor (out: ActorRef, actorSystem: ActorSystem, userId: String, directChatService: DirectChatService)(implicit ec: ExecutionContext) extends Actor {
+class DirectChatActor(out: ActorRef, actorSystem: ActorSystem, userId: String, playerService: PlayerService)(implicit ec: ExecutionContext) extends Actor {
 
   def receive: PartialFunction[Any, Unit] = {
     case _: Unit => ()
   }
 
   override def preStart(): Unit = {
-    directChatService
-      .isGivenPlayerValid(userId)
-      .foreach(isValid => {
-        if(!isValid) {
+    playerService
+      .checkIfPlayerExists(userId)
+      .foreach(exist => {
+        if(!exist) {
           self ! PoisonPill
         }
       })
