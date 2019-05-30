@@ -20,11 +20,12 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
 
   private class DirectChatMessagesTable(tag: Tag) extends Table[DirectChatMessage](tag, "direct_chat_messages") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def chatRoomId = column[String]("chat_room_id")
     def receiverId = column[String]("receiver_id")
     def senderId = column[String]("sender_id")
     def message = column[String]("message")
     def messageSendDate = column[Timestamp]("message_send_date")
-    def * = (id, receiverId, senderId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
+    def * = (id, chatRoomId, receiverId, senderId, message, messageSendDate) <> ((DirectChatMessage.apply _).tupled, DirectChatMessage.unapply)
     def receiver = foreignKey("player", receiverId, playersRepository.players)(_.id)
     def sender = foreignKey("player", senderId, playersRepository.players)(_.id)
   }
@@ -39,11 +40,10 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
     }
   }
 
-  def getMessagesForGivenReceiverAndSender(receiverId: String, senderId: String): Future[Seq[DirectChatMessage]] = {
+  def getMessagesByChatRoomId(chatRoomId: String): Future[Seq[DirectChatMessage]] = {
     db.run {
       directChatMessages
-        .filter(_.receiverId === receiverId)
-        .filter(_.senderId === senderId)
+        .filter(_.chatRoomId === chatRoomId)
         .result
     }
   }

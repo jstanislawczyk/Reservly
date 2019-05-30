@@ -7,6 +7,7 @@ import play.api.libs.json._
 
 case class DirectChatMessage (
   id: Long,
+  var chatRoomId: String,
   receiverId: String,
   senderId: String,
   message: String,

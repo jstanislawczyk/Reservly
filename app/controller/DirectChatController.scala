@@ -57,9 +57,9 @@ class DirectChatController @Inject()
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Messages list received"),
   ))
-  def getMessagesForGivenReceiverAndSenderId(receiverId: String, senderId: String): Action[AnyContent] = Action.async { implicit request =>
+  def getMessagesByChatRoomId(chatRoomId: String): Action[AnyContent] = Action.async { implicit request =>
     directChatService
-      .getMessagesForGivenReceiverAndSender(receiverId, senderId)
+      .getMessagesByChatRoomId(chatRoomId)
       .map(messages => {
         Ok(Json.toJson(messages))
       })
