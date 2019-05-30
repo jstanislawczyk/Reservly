@@ -76,7 +76,7 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
   "charRoomId": "id2_id1",       //[String: created using alphabetical ordered identifiers players in the conversation, spearated by _]
   "receiverId": "id2",           //[String: existing player id]
   "senderId": "id2",             //[String: existing player id]
-  "message": "Test test,                           //[String: size -> 3 to 300 letters]
+  "message": "Test test",                          //[String: size -> 3 to 300 letters]
   "messageSendDate": "2019-01-01T07:00:00"         //[java.sql.Timestamp]
 }
 ```
