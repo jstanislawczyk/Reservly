@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import model.Player
 
 object PlayerJsonSerializer extends JsonSerializer[Player] {
+
   private val gson = new Gson
 
   def toJson(player: Player): String = {

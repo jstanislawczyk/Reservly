@@ -1,14 +1,13 @@
-package actorRegister
+package actor_register
 
-import actorRegister.GlobalChatActorRegister.actorRegister
+import actor_register.GlobalChatActorRegister.actorRegister
 import akka.actor.ActorSystem
 
-object GlobalChatActorRegister {
+object MatchListActorRegister {
   var actorRegister: scala.collection.mutable.Map[Int, String] = scala.collection.mutable.Map[Int, String]()
 }
 
-class GlobalChatActorRegister(actorSystem: ActorSystem) {
-
+class MatchListActorRegister(actorSystem: ActorSystem) {
   def unregisterClosedSocket(actorPathForDelete: String): Unit = {
     actorRegister.foreach(actor =>
       if(actor._2 == actorPathForDelete) {

@@ -1,6 +1,6 @@
 package actor
 
-import actorRegister.GlobalChatActorRegister
+import actor_register.GlobalChatActorRegister
 import akka.actor._
 
 object GlobalChatActor {

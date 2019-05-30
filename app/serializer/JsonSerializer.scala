@@ -1,6 +1,8 @@
 package serializer
 
-trait JsonSerializer[Object] {
-  def toJson(model: Object): String
-  def fromJson(json: String): Object
+trait JsonSerializer[T] {
+
+  def toJson(t: T): String
+
+  def fromJson(json: String): T
 }

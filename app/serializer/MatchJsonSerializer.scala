@@ -1,18 +1,19 @@
 package serializer
 
-import com.google.gson.GsonBuilder
+import com.google.gson.{Gson, GsonBuilder}
 import model.Match
 
 object MatchJsonSerializer extends JsonSerializer[Match] {
-  private val gson = new GsonBuilder()
+
+  val gson: Gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm")
       .create()
 
-  def toJson(game: Match): String = {
+  override def toJson(game: Match): String = {
     gson.toJson(game)
   }
 
-  def fromJson(gameJson: String): Match = {
+  override def fromJson(gameJson: String): Match = {
     gson.fromJson(gameJson, classOf[Match])
   }
 }

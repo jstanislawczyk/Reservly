@@ -28,4 +28,8 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
   def checkIfPlayerExists(playerId: String): Future[Boolean] = {
     playerRepository.checkIfPlayerExists(playerId)
   }
+
+  def checkIfPlayersPairExist(chatMembersIds: (String, String)): Future[Boolean] = {
+    playerRepository.checkIfPlayersPairExist(chatMembersIds)
+  }
 }

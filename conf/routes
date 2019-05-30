@@ -1,36 +1,40 @@
 # Home Controller
-GET             /                               controller.HomeController.home()
+GET         /                               controller.HomeController.home()
 
 
 # Player Controller
-GET             /players                        controller.PlayerController.getAllPlayers()
-GET             /players/:playerId              controller.PlayerController.getPlayerById(playerId: String)
-POST            /players                        controller.PlayerController.savePlayer()
+GET         /players                        controller.PlayerController.getAllPlayers()
+GET         /players/:playerId              controller.PlayerController.getPlayerById(playerId: String)
+POST        /players                        controller.PlayerController.savePlayer()
 
 
 # Matches Controller
-GET             /matches                        controller.MatchController.getAllMatches()
-GET             /matches/players                controller.MatchController.getAllMatchesWithPlayers()
-GET             /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
-GET             /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
-POST            /matches                        controller.MatchController.saveMatch()
-DELETE          /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
+GET         /matches                        controller.MatchController.getAllMatches()
+GET         /matches/players                controller.MatchController.getAllMatchesWithPlayers()
+GET         /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
+GET         /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
+POST        /matches                        controller.MatchController.saveMatch()
+DELETE      /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
 
 
 # Match Websocket
-GET             /socket/matches                 websocket.MatchListSocket.getMatches
+GET         /socket/matches                 websocket.MatchListSocket.getMatches
 
 
 # Chat Websocket
-GET             /socket/chat/global             websocket.GlobalChatSocket.globalChat
+GET         /socket/chat/global             websocket.GlobalChatSocket.globalChat
+GET         /socket/chat/direct             websocket.DirectChatSocket.directChat(receiverId: String ?="")
 
 
-# Chat Controller
-POST            /chat/global                    controller.ChatController.sendMessageToGlobalChat()
+# Global Chat Controller
+POST        /chat/global                    controller.GlobalChatController.sendMessageToGlobalChat()
 
+# Direct Chat Controller
+GET         /chat/direct/messages/chat-room/:chatRoomId        controller.DirectChatController.getMessagesByChatRoomId(chatRoomId: String)
+POST        /chat/direct/messages                              controller.DirectChatController.sendDirectMessage()
 
 # Swagger routes
-GET             /assets/*file                   controllers.Assets.at(path="/public", file)
-GET             /swagger.json                   controllers.ApiHelpController.getResources
-GET             /docs/                          controllers.Assets.at(path="/public/swagger", file="index.html")
-GET             /docs/*file                     controllers.Assets.at(path="/public/swagger", file)
+GET         /assets/*file                   controllers.Assets.at(path="/public", file)
+GET         /swagger.json                   controllers.ApiHelpController.getResources
+GET         /docs/                          controllers.Assets.at(path="/public/swagger", file="index.html")
+GET         /docs/*file                     controllers.Assets.at(path="/public/swagger", file)

@@ -2,7 +2,7 @@ package service
 
 import java.sql.Timestamp
 
-import actorRegister.MatchListActorRegister
+import actor_register.MatchListActorRegister
 import akka.actor.ActorSystem
 import helper.UpdateType
 import helper.UpdateType.UpdateType

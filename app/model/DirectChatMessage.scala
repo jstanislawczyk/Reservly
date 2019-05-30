@@ -1,20 +1,22 @@
 package model
 
-import play.api.libs.json._
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
-case class Match(
+import play.api.libs.json._
+
+case class DirectChatMessage (
   id: Long,
-  startDate: Timestamp,
-  endDate: Timestamp,
-  gameName: String,
-  playerId: String
+  var chatRoomId: String,
+  receiverId: String,
+  senderId: String,
+  message: String,
+  var messageSendDate: Timestamp
 )
 
-object Match {
+object DirectChatMessage {
   implicit object timestampFormat extends Format[Timestamp] {
-    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
+    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
     def reads(json: JsValue): JsSuccess[Timestamp] = {
       val dateAsString = json.as[String]
@@ -27,5 +29,5 @@ object Match {
     def writes(time: Timestamp) = JsString(format.format(time))
   }
 
-  implicit val matchFormat: OFormat[Match] = Json.format[Match]
+  implicit val directMessageFormat: OFormat[DirectChatMessage] = Json.format[DirectChatMessage]
 }

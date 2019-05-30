@@ -4,13 +4,14 @@ import com.google.gson.Gson
 import model.ResponseMessage
 
 object ErrorMessageJsonSerializer extends JsonSerializer[ResponseMessage] {
+
   private val gson = new Gson
 
-  def toJson(errorMessage: ResponseMessage): String = {
-    gson.toJson(errorMessage)
+  override def toJson(responseMessage: ResponseMessage): String = {
+    gson.toJson(responseMessage)
   }
 
-  def fromJson(errorMessageJson: String): ResponseMessage = {
-    gson.fromJson(errorMessageJson, classOf[ResponseMessage])
+  override def fromJson(json: String): ResponseMessage = {
+    gson.fromJson(json, classOf[ResponseMessage])
   }
 }
