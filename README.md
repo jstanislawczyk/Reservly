@@ -69,6 +69,18 @@ Frontend repository available [here](https://github.com/mtrybus2208/game-reserva
 }
 ```
 
+### DirectChatMessage
+```javascript
+{ 
+  "id": "11",                    //[Long]
+  "charRoomId": "id2_id1",       //[String: created using alphabetical ordered identifiers players in the conversation, spearated by _]
+  "receiverId": "id2",           //[String: existing player id]
+  "senderId": "id2",             //[String: existing player id]
+  "message": "Test test,                           //[String: size -> 3 to 300 letters]
+  "messageSendDate": "2019-01-23T06:15:13"         //[java.sql.Timestamp]
+}
+```
+
 ### ResponseMessage
 ```javascript
 { 
