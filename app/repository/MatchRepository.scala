@@ -68,6 +68,7 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
       sql"""
         SELECT COUNT(*) FROM matches
         WHERE end_date >= current_timestamp
+        AND player_id = $playerId
       """
 
     db.run {
