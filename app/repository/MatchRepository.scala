@@ -102,8 +102,8 @@ class MatchRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(implic
     val countMatchesInGivenTimePeriod =
       sql"""
         SELECT COUNT(*) FROM matches
-        WHERE start_date BETWEEN $startMatchDate AND $endMatchDate
-        OR end_date BETWEEN $startMatchDate AND $endMatchDate
+        WHERE start_date >= $startMatchDate AND start_date < $endMatchDate
+        OR end_date > $startMatchDate AND end_date <= $endMatchDate
       """
 
     db.run {
