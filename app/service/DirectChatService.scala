@@ -18,8 +18,13 @@ class DirectChatService @Inject()
 
     setupChatMessage(chatMessage)
 
-    directChatMessageRepository.saveMessage(chatMessage)
-    sendMessage(actorSystem, chatMessage)
+    directChatMessageRepository
+      .saveMessage(chatMessage)
+      .foreach {
+        case savedMessage: DirectChatMessage =>
+          sendMessage(actorSystem, savedMessage)
+        case null => ()
+      }
   }
 
   def getMessagesByChatRoomId(chatRoomId: String): Future[Seq[DirectChatMessage]] = {
@@ -57,5 +62,6 @@ class DirectChatService @Inject()
     val chatMessageAsJson = buildResponseJson(directChatMessageObjectAsJson)
 
     directChatActorRegister.sendMessage(chatMessage.receiverId, chatMessageAsJson)
+    directChatActorRegister.sendMessage(chatMessage.senderId, chatMessageAsJson)
   }
 }
