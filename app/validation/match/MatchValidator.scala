@@ -23,10 +23,13 @@ object MatchValidator extends Validator[Match] {
       isValid = false
     }
 
-    if(isValueNotInRange(game.gameName.length, minimumGameNameSize, maximumGameNameSize)) {
+    if(isMatchEndDateBeforeCurrentTime(game.endDate)) {
       isValid = false
     }
 
+    if(isValueNotInRange(game.gameName.length, minimumGameNameSize, maximumGameNameSize)) {
+      isValid = false
+    }
     isValid
   }
 
@@ -39,6 +42,12 @@ object MatchValidator extends Validator[Match] {
     val duration = endDate.getTime - startDate.getTime
 
     maximumMatchLimit < duration
+  }
+
+  private def isMatchEndDateBeforeCurrentTime(gameEndDate: Timestamp): Boolean = {
+    val currentTimestamp = new Timestamp(System.currentTimeMillis())
+
+    gameEndDate.before(currentTimestamp)
   }
 
   private def isValueNotInRange = (value: Int, min: Int, max: Int) => value < min || value > max
