@@ -2,6 +2,7 @@ package service
 
 import actor_register.GlobalChatActorRegister
 import akka.actor.ActorSystem
+import helper.{WebSocketResponseBuilder, WebSocketResponseType}
 import model.GlobalChatMessage
 import play.api.mvc.{AnyContent, Request}
 import serializer.ChatMessageJsonSerializer
@@ -22,8 +23,14 @@ class GlobalChatService {
 
   private def broadcastMessage(actorSystem: ActorSystem, chatMessage: GlobalChatMessage): Unit = {
     val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
-    val chatMessageAsJson = s"[GLOBAL_CHAT] ${ChatMessageJsonSerializer.toJson(chatMessage)}"
+    val chatMessageAsJson = buildResponseJson(ChatMessageJsonSerializer.toJson(chatMessage))
 
     globalChatActorRegister.broadcastMessage(chatMessageAsJson)
+  }
+
+  def buildResponseJson(globalChatMessageObjectAsJson: String): String = {
+    val responseType = WebSocketResponseType.GLOBAL_CHAT
+
+    WebSocketResponseBuilder.buildWebsocketResponse(responseType, globalChatMessageObjectAsJson)
   }
 }

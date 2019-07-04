@@ -4,8 +4,8 @@ import java.sql.Timestamp
 
 import actor_register.MatchListActorRegister
 import akka.actor.ActorSystem
-import helper.UpdateType
-import helper.UpdateType.UpdateType
+import helper.WebSocketResponseType.WebSocketResponseType
+import helper.{WebSocketResponseBuilder, WebSocketResponseType}
 import javax.inject.Inject
 import model.{Match, Player}
 import play.api.libs.json.Json
@@ -35,7 +35,7 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
     val savedMatch = matchRepository.saveMatch(matchToSave, playerId)
 
     savedMatch.map(savedMatch =>
-      broadcastMessageWithUpdateForMatchesList(UpdateType.SAVED, Json.toJson(savedMatch).toString, actorSystem)
+      broadcastMessageWithUpdateForMatchesList(WebSocketResponseType.MATCH_SAVED, Json.toJson(savedMatch).toString, actorSystem)
     )
 
     savedMatch
@@ -46,7 +46,7 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
 
     deleteMatchStatus.map {
       case 1 =>
-        broadcastMessageWithUpdateForMatchesList(UpdateType.DELETED, matchId.toString, actorSystem)
+        broadcastMessageWithUpdateForMatchesList(WebSocketResponseType.MATCH_DELETED, matchId.toString, actorSystem)
     }
 
     deleteMatchStatus
@@ -56,9 +56,14 @@ class MatchService @Inject() (matchRepository: MatchRepository, actorSystem: Act
     matchRepository.countMatchesInGivenTimePeriod(startMatchDate, endMatchDate)
   }
 
-  private def broadcastMessageWithUpdateForMatchesList(typeOfUpdate: UpdateType, message: String, actorSystem: ActorSystem): Unit = {
+  private def broadcastMessageWithUpdateForMatchesList(typeOfUpdate: WebSocketResponseType, message: String, actorSystem: ActorSystem): Unit = {
     val matchListActorRegister = new MatchListActorRegister(actorSystem)
+    val matchesResponse = buildResponseJson(typeOfUpdate, message)
 
-    matchListActorRegister.broadcastMessage(s"[${typeOfUpdate.toString}] $message")
+    matchListActorRegister.broadcastMessage(matchesResponse)
+  }
+
+  def buildResponseJson(responseType: WebSocketResponseType, messageAsJson: String): String = {
+    WebSocketResponseBuilder.buildWebsocketResponse(responseType, messageAsJson)
   }
 }
