@@ -103,12 +103,12 @@ class MatchController @Inject()
     new ApiResponse(code = 400, message = "Match validation failed"),
     new ApiResponse(code = 403, message = "Access forbidden")
   ))
-  def saveMatch(isQuickReserve: Boolean): Action[AnyContent] = Action.async { implicit request =>
+  def saveMatch(isQuickBooking: Boolean): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
     val matchToSave = MatchJsonSerializer.fromJson(matchJson)
     val playerId = getPlayerAuthId(request)
 
-    if(isQuickReserve) {
+    if(isQuickBooking) {
       setCurrentMatchReserveTime(matchToSave)
     }
 
