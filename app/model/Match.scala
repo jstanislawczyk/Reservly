@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat
 
 case class Match(
   id: Long,
-  startDate: Timestamp,
-  endDate: Timestamp,
+  var startDate: Timestamp,
+  var endDate: Timestamp,
   gameName: String,
   playerId: String
 )
