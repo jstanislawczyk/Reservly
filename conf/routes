@@ -13,7 +13,7 @@ GET         /matches                        controller.MatchController.getAllMat
 GET         /matches/players                controller.MatchController.getAllMatchesWithPlayers()
 GET         /matches/:matchId               controller.MatchController.getMatchById(matchId: Long)
 GET         /matches/:matchId/players       controller.MatchController.getMatchByIdWithPlayer(matchId: Long)
-POST        /matches                        controller.MatchController.saveMatch()
+POST        /matches                        controller.MatchController.saveMatch(isQuickBooking: Boolean ?=false)
 DELETE      /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
 
 

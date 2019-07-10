@@ -1,5 +1,7 @@
 package controller
 
+import java.sql.Timestamp
+
 import io.swagger.annotations._
 import javax.inject.{Inject, Singleton}
 import model.{Match, Player, ResponseMessage}
@@ -101,10 +103,14 @@ class MatchController @Inject()
     new ApiResponse(code = 400, message = "Match validation failed"),
     new ApiResponse(code = 403, message = "Access forbidden")
   ))
-  def saveMatch(): Action[AnyContent] = Action.async { implicit request =>
+  def saveMatch(isQuickBooking: Boolean): Action[AnyContent] = Action.async { implicit request =>
     val matchJson = request.body.asJson.get.toString()
     val matchToSave = MatchJsonSerializer.fromJson(matchJson)
     val playerId = getPlayerAuthId(request)
+
+    if(isQuickBooking) {
+      setCurrentMatchReserveTime(matchToSave)
+    }
 
     if(isMatchValid(matchToSave)) {
       authorizer.authorizePlayerAccess(playerId).flatMap {
@@ -160,6 +166,17 @@ class MatchController @Inject()
 
   private def getPlayerAuthId(request: MessagesRequest[AnyContent]): String = {
     request.headers.get("Auth-Id").getOrElse("0").toString
+  }
+
+  private def setCurrentMatchReserveTime(matchToSave: Match): Match = {
+    val currentTime = new Timestamp(System.currentTimeMillis())
+    val quaterOfAnHourInMillis = 900000
+    val endMatchTime = new Timestamp(currentTime.getTime + quaterOfAnHourInMillis)
+
+    matchToSave.startDate = currentTime
+    matchToSave.endDate = endMatchTime
+
+    matchToSave
   }
 
   private def isMatchValid(game: Match): Boolean = {
