@@ -27,8 +27,8 @@ class DirectChatService @Inject()
       }
   }
 
-  def getMessagesByChatRoomId(chatRoomId: String): Future[Seq[DirectChatMessage]] = {
-    directChatMessageRepository.getMessagesByChatRoomId(chatRoomId)
+  def getMessagesByChatRoomId(chatRoomId: String, firstElementNumber: Int, numberOfElements: Int): Future[Seq[DirectChatMessage]] = {
+    directChatMessageRepository.getMessagesByChatRoomId(chatRoomId, firstElementNumber, numberOfElements)
   }
 
   def buildResponseJson(directChatMessageObjectAsJson: String): String = {

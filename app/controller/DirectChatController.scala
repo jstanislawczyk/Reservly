@@ -9,6 +9,7 @@ import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponent
 import serializer.DirectChatMessageJsonSerializer
 import service.{DirectChatService, PlayerService}
 import validation.chat_message.GlobalChatMessageValidatorValues
+import validation.common.ParamsValidator
 import validation.direct_chat_message.DirectChatMessageValidator
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,18 +58,30 @@ class DirectChatController @Inject()
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Messages list received"),
   ))
-  def getMessagesByChatRoomId(chatRoomId: String): Action[AnyContent] = Action.async { implicit request =>
-    directChatService
-      .getMessagesByChatRoomId(chatRoomId)
-      .map(messages => {
-        Ok(Json.toJson(messages))
-      })
+  def getMessagesByChatRoomId(chatRoomId: String, firstElementNumber: Int, numberOfElements: Int): Action[AnyContent] = Action.async { implicit request =>
+
+    if(ParamsValidator.areParametersNegative(firstElementNumber, numberOfElements)) {
+      Future{BadRequest(createInvalidParamsErrorMessage)}
+    } else {
+      directChatService
+        .getMessagesByChatRoomId(chatRoomId, firstElementNumber, numberOfElements)
+        .map(messages => {
+          Ok(Json.toJson(messages))
+        })
+    }
   }
 
   private def createNotFoundErrorMessage: String = {
     ResponseMessage.createResponseMessageAsJson(
       "404",
       "At least one of given player ids is invalid"
+    )
+  }
+
+  private def createInvalidParamsErrorMessage: String = {
+    ResponseMessage.createResponseMessageAsJson(
+      "400",
+      "Params can not be negative"
     )
   }
 

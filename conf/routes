@@ -30,7 +30,7 @@ GET         /socket/chat/direct             websocket.DirectChatSocket.directCha
 POST        /chat/global                    controller.GlobalChatController.sendMessageToGlobalChat()
 
 # Direct Chat Controller
-GET         /chat/direct/messages/chat-room/:chatRoomId        controller.DirectChatController.getMessagesByChatRoomId(chatRoomId: String)
+GET         /chat/direct/messages/chat-room/:chatRoomId        controller.DirectChatController.getMessagesByChatRoomId(chatRoomId: String, firstElementNumber: Int ?=0, numberOfElements: Int ?=100)
 POST        /chat/direct/messages                              controller.DirectChatController.sendDirectMessage()
 
 # Swagger routes
