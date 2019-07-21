@@ -13,7 +13,8 @@ Reservly is a tool for reserving game match queue
 ## Frontend
 Frontend repository available [here](https://github.com/mtrybus2208/game-reservation-app) 
 
-![preview](https://user-images.githubusercontent.com/31374669/56235258-5c7c1d00-6087-11e9-87c4-cb3659d61fdb.png)
+![obraz](https://user-images.githubusercontent.com/31374669/61596004-302fe980-abfe-11e9-864b-a28a585e0ad8.png)
+
 
 ## How to run
 #### Database
