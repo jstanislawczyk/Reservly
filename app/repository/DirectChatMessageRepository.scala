@@ -55,6 +55,7 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
     db.run {
       directChatMessages
         .filter(_.chatRoomId === chatRoomId)
+        .sortBy(_.messageSendDate.desc)
         .drop(firstElementNumber)
         .take(numberOfElements)
         .result
