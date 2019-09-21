@@ -51,10 +51,13 @@ class DirectChatMessageRepository @Inject()(dbConfigProvider: DatabaseConfigProv
     }
   }
 
-  def getMessagesByChatRoomId(chatRoomId: String): Future[Seq[DirectChatMessage]] = {
+  def getMessagesByChatRoomId(chatRoomId: String, firstElementNumber: Int, numberOfElements: Int): Future[Seq[DirectChatMessage]] = {
     db.run {
       directChatMessages
         .filter(_.chatRoomId === chatRoomId)
+        .sortBy(_.messageSendDate.desc)
+        .drop(firstElementNumber)
+        .take(numberOfElements)
         .result
     }
   }
