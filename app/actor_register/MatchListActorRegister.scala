@@ -1,6 +1,6 @@
 package actor_register
 
-import actor_register.GlobalChatActorRegister.actorRegister
+import actor_register.MatchListActorRegister.actorRegister
 import akka.actor.ActorSystem
 
 object MatchListActorRegister {
