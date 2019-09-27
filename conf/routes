@@ -22,7 +22,7 @@ GET         /socket/matches                 websocket.MatchListSocket.getMatches
 
 
 # Chat Websocket
-GET         /socket/chat/global             websocket.GlobalChatSocket.globalChat
+GET         /socket/chat/global             websocket.GlobalChatSocket.globalChat(playerId: String ?="")
 GET         /socket/chat/direct             websocket.DirectChatSocket.directChat(receiverId: String ?="")
 
 
