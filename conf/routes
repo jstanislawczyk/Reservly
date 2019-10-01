@@ -4,6 +4,7 @@ GET         /                               controller.HomeController.home()
 
 # Player Controller
 GET         /players                        controller.PlayerController.getAllPlayers()
+GET         /players/active                 controller.PlayerController.getActivePlayers()
 GET         /players/:playerId              controller.PlayerController.getPlayerById(playerId: String)
 POST        /players                        controller.PlayerController.savePlayer()
 

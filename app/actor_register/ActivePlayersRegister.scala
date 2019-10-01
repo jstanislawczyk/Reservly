@@ -18,6 +18,10 @@ class ActivePlayersRegister() {
     activePlayersRegister -= playerId
   }
 
+  def getActivePlayers: scala.collection.mutable.ListBuffer[String] = {
+    activePlayersRegister
+  }
+
   private def activePlayerNotRegistered(playerId: String): Boolean = {
     !activePlayersRegister.contains(playerId)
   }

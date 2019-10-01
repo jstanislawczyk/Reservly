@@ -1,5 +1,6 @@
 package controller
 
+import actor_register.ActivePlayersRegister
 import io.swagger.annotations._
 import javax.inject._
 import model.{Player, ResponseMessage}
@@ -78,6 +79,25 @@ class PlayerController @Inject()
         )
       }
     }
+  }
+
+  @ApiOperation(
+    value = "Get active players",
+    httpMethod = "GET",
+    response = classOf[Seq[Player]]
+  )
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Returned list of all active players")
+  ))
+  def getActivePlayers: Action[AnyContent] = Action.async { implicit request =>
+    val activePlayersRegister = new ActivePlayersRegister
+    val activePlayersList = activePlayersRegister.getActivePlayers
+
+    playerService
+      .getPlayersWithGivenIds(activePlayersList)
+      .map(player =>
+        Ok(Json.toJson(player))
+      )
   }
 
   private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
