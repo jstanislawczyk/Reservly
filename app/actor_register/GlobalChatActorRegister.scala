@@ -9,12 +9,18 @@ object GlobalChatActorRegister {
 
 class GlobalChatActorRegister(actorSystem: ActorSystem) {
 
-  def unregisterClosedSocket(actorPathForDelete: String): Unit = {
+  def unregisterClosedSocket(actorPathForDelete: String): String = {
+
+    var unregisteredPlayerId = ""
+
     actorRegister.foreach(actor =>
       if(actor._2 == actorPathForDelete) {
         actorRegister.remove(actor._1)
+        unregisteredPlayerId = actor._1
       }
     )
+
+    unregisteredPlayerId
   }
 
   def broadcastMessage(message: String): Unit = {

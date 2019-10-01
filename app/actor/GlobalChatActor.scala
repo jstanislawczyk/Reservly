@@ -1,6 +1,6 @@
 package actor
 
-import actor_register.GlobalChatActorRegister
+import actor_register.{ActivePlayersRegister, GlobalChatActorRegister}
 import akka.actor._
 
 object GlobalChatActor {
@@ -14,6 +14,9 @@ class GlobalChatActor (out: ActorRef, actorSystem: ActorSystem) extends Actor {
 
   override def postStop(): Unit = {
     val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
-    globalChatActorRegister.unregisterClosedSocket(out.path.toString)
+    val activePlayersRegister = new ActivePlayersRegister
+    val unregisteredPlayerId = globalChatActorRegister.unregisterClosedSocket(out.path.toString)
+
+    activePlayersRegister.unregisterActivePlayer(unregisteredPlayerId)
   }
 }
