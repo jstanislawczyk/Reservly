@@ -2,6 +2,7 @@ package actor_register
 
 import actor_register.ActivePlayersRegister.activePlayersRegister
 import akka.actor.ActorSystem
+import com.google.gson.Gson
 import helper.{WebSocketResponseBuilder, WebSocketResponseType}
 import helper.WebSocketResponseType.WebSocketResponseType
 
@@ -37,7 +38,9 @@ class ActivePlayersRegister(actorSystem: ActorSystem) {
     )
   }
 
-  private def buildMessage(responseType: WebSocketResponseType, messageAsJson: String): String = {
-    WebSocketResponseBuilder.buildWebsocketResponse(responseType, messageAsJson)
+  private def buildMessage(responseType: WebSocketResponseType, message: String): String = {
+    val gson = new Gson
+
+    WebSocketResponseBuilder.buildWebsocketResponse(responseType, gson.toJson(message))
   }
 }
