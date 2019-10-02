@@ -15,13 +15,13 @@ class ActivePlayersRegister(actorSystem: ActorSystem) {
   def registerActivePlayer(playerId: String, actorPath: String): Unit = {
     if(activePlayerNotRegistered(playerId)) {
       activePlayersRegister += (playerId -> actorPath)
-      broadcastMessage(buildMessage(WebSocketResponseType.ACTIVE_USER_REGISTER, playerId))
+      broadcastMessage(buildMessage(WebSocketResponseType.ACTIVE_PLAYER_REGISTER, playerId))
     }
   }
 
   def unregisterActivePlayer(playerId: String): Unit = {
     activePlayersRegister -= playerId
-    broadcastMessage(buildMessage(WebSocketResponseType.ACTIVE_USER_UNREGISTER, playerId))
+    broadcastMessage(buildMessage(WebSocketResponseType.ACTIVE_PLAYER_UNREGISTER, playerId))
   }
 
   def getActivePlayers: collection.Set[String] = {
