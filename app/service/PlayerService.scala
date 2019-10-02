@@ -1,21 +1,19 @@
 package service
 
-import actor_register.ActivePlayersRegister
 import akka.actor.ActorSystem
 import javax.inject.Inject
 import model.Player
 import repository.PlayerRepository
 
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 
-class PlayerService @Inject() (playerRepository: PlayerRepository, activePlayersRegister: ActivePlayersRegister, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
+class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
 
   def getAllPlayers: Future[Seq[Player]] = {
     playerRepository.getAllPlayers
   }
 
-  def getPlayersWithGivenIds(playersIds: ListBuffer[String]): Future[Seq[Player]] = {
+  def getPlayersWithGivenIds(playersIds: collection.Set[String]): Future[Seq[Player]] = {
     playerRepository.getPlayersWithGivenIds(playersIds)
   }
 

@@ -5,7 +5,6 @@ import model.Player
 import play.api.db.slick.DatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -30,7 +29,7 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     players.result
   }
 
-  def getPlayersWithGivenIds(playersIds: ListBuffer[String]): Future[Seq[Player]] = db.run {
+  def getPlayersWithGivenIds(playersIds: collection.Set[String]): Future[Seq[Player]] = db.run {
     players
       .filter(_.id.inSet(playersIds))
       .result

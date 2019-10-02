@@ -1,7 +1,7 @@
 package websocket
 
 import actor.GlobalChatActor
-import actor_register.{ActivePlayersRegister, GlobalChatActorRegister}
+import actor_register.GlobalChatActorRegister
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
@@ -26,8 +26,6 @@ class GlobalChatSocket @Inject()
   def globalChat(playerId: String): WebSocket = WebSocket.accept[String, String] { _ =>
     ActorFlow.actorRef(out => {
       registerNewActor(actorSystem, out.path.toString, playerId)
-      registerActivePlayer(playerId)
-
       GlobalChatActor.props(out, actorSystem)
     })
   }
@@ -35,10 +33,5 @@ class GlobalChatSocket @Inject()
   private def registerNewActor(actorSystem: ActorSystem, actorPath: String, playerId: String): Unit = {
     val globalChatActorRegister = new GlobalChatActorRegister(actorSystem)
     globalChatActorRegister.registerNewActor(actorPath, playerId)
-  }
-
-  private def registerActivePlayer(playerId: String): Unit = {
-    val activePlayersRegister = new ActivePlayersRegister
-    activePlayersRegister.registerActivePlayer(playerId)
   }
 }
