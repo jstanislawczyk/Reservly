@@ -1,12 +1,11 @@
 # Home Controller
 GET         /                               controller.HomeController.home()
 
-
 # Player Controller
 GET         /players                        controller.PlayerController.getAllPlayers()
+GET         /players/active                 controller.PlayerController.getActivePlayers()
 GET         /players/:playerId              controller.PlayerController.getPlayerById(playerId: String)
 POST        /players                        controller.PlayerController.savePlayer()
-
 
 # Matches Controller
 GET         /matches                        controller.MatchController.getAllMatches()
@@ -16,15 +15,15 @@ GET         /matches/:matchId/players       controller.MatchController.getMatchB
 POST        /matches                        controller.MatchController.saveMatch(isQuickBooking: Boolean ?=false)
 DELETE      /matches/:matchId               controller.MatchController.deleteMatchById(matchId: Long)
 
-
 # Match Websocket
 GET         /socket/matches                 websocket.MatchListSocket.getMatches
 
-
 # Chat Websocket
-GET         /socket/chat/global             websocket.GlobalChatSocket.globalChat
+GET         /socket/chat/global             websocket.GlobalChatSocket.globalChat(playerId: String ?="")
 GET         /socket/chat/direct             websocket.DirectChatSocket.directChat(receiverId: String ?="")
 
+# Match Websocket
+GET         /socket/players/active          websocket.ActivePlayersSocket.getActivePlayers(playerId: String ?="")
 
 # Global Chat Controller
 POST        /chat/global                    controller.GlobalChatController.sendMessageToGlobalChat()

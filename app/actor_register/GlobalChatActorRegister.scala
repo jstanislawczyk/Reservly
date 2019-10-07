@@ -4,7 +4,7 @@ import actor_register.GlobalChatActorRegister.actorRegister
 import akka.actor.ActorSystem
 
 object GlobalChatActorRegister {
-  var actorRegister: scala.collection.mutable.Map[Int, String] = scala.collection.mutable.Map[Int, String]()
+  var actorRegister: scala.collection.mutable.Map[String, String] = scala.collection.mutable.Map[String, String]()
 }
 
 class GlobalChatActorRegister(actorSystem: ActorSystem) {
@@ -23,27 +23,9 @@ class GlobalChatActorRegister(actorSystem: ActorSystem) {
     )
   }
 
-  def registerNewActor(actorPath: String): Unit = {
-    val freeActorId = getFreeActorId
-    actorRegister.put(freeActorId, actorPath)
-  }
-
-  private def getFreeActorId: Int = {
-    var actorId = 0
-    var actorNotCreated = true
-
-    while(actorNotCreated) {
-      actorId += 1
-
-      if(actorWithGivenIdDoesNotExists(actorId)) {
-        actorNotCreated = false
-      }
+  def registerNewActor(actorPath: String, playerId: String): Unit = {
+    if(!playerId.isBlank) {
+      actorRegister.put(playerId, actorPath)
     }
-
-    actorId
-  }
-
-  private def actorWithGivenIdDoesNotExists(actorId: Int): Boolean = {
-    !actorRegister.contains(actorId)
   }
 }

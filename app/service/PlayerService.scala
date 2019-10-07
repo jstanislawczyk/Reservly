@@ -13,6 +13,10 @@ class PlayerService @Inject() (playerRepository: PlayerRepository, actorSystem: 
     playerRepository.getAllPlayers
   }
 
+  def getPlayersWithGivenIds(playersIds: collection.Set[String]): Future[Seq[Player]] = {
+    playerRepository.getPlayersWithGivenIds(playersIds)
+  }
+
   def getPlayerById(playerId: String): Future[Option[Player]] = {
     playerRepository.getPlayerById(playerId)
   }

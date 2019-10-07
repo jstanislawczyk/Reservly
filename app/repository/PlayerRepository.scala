@@ -29,6 +29,13 @@ class PlayerRepository @Inject()(dbConfigProvider: DatabaseConfigProvider)(impli
     players.result
   }
 
+  def getPlayersWithGivenIds(playersIds: collection.Set[String]): Future[Seq[Player]] = db.run {
+    players
+      .filter(_.id.inSet(playersIds))
+      .sortBy(_.displayName.asc)
+      .result
+  }
+
   def getPlayerById(playerId: String): Future[Option[Player]] = db.run {
     players
       .filter(_.id === playerId)

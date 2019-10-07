@@ -1,5 +1,7 @@
 package controller
 
+import actor_register.ActivePlayersRegister
+import akka.actor.ActorSystem
 import io.swagger.annotations._
 import javax.inject._
 import model.{Player, ResponseMessage}
@@ -14,7 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 @Api("PlayerController")
 class PlayerController @Inject()
-  (playerService: PlayerService, cc: MessagesControllerComponents )
+  (playerService: PlayerService, cc: MessagesControllerComponents, actorSystem: ActorSystem)
   (implicit ec: ExecutionContext) extends MessagesAbstractController(cc) {
 
   @ApiOperation(
@@ -78,6 +80,25 @@ class PlayerController @Inject()
         )
       }
     }
+  }
+
+  @ApiOperation(
+    value = "Get active players",
+    httpMethod = "GET",
+    response = classOf[Seq[Player]]
+  )
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Returned list of all active players")
+  ))
+  def getActivePlayers: Action[AnyContent] = Action.async { implicit request =>
+    val activePlayersRegister = new ActivePlayersRegister(actorSystem)
+    val activePlayersList = activePlayersRegister.getActivePlayers
+
+    playerService
+      .getPlayersWithGivenIds(activePlayersList)
+      .map(player =>
+        Ok(Json.toJson(player))
+      )
   }
 
   private def getPlayerFromRequest(request: MessagesRequest[AnyContent]): Player = {
